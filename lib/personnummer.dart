@@ -1,8 +1,10 @@
 class Personnummer {
+  // Validate Swedish social security numbers. String or number is allowed.
   static bool valid(dynamic input) {
     input = input.toString();
 
-    RegExp reg = new RegExp(r'^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$');
+    RegExp reg = new RegExp(
+        r'^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$');
     RegExpMatch match = reg.firstMatch(input);
 
     if (match == null) {
@@ -10,12 +12,12 @@ class Personnummer {
     }
 
     String century = match[1];
-    String year    = match[2];
-    String month   = match[3];
-    String day     = match[4];
-    String sep     = match[5];
-    String nm      = match[6];
-    String check   = match[7];
+    String year = match[2];
+    String month = match[3];
+    String day = match[4];
+    String sep = match[5];
+    String nm = match[6];
+    String check = match[7];
 
     if (year.length == 4) {
       year = year.substring(2);
@@ -31,12 +33,13 @@ class Personnummer {
       return valid;
     }
 
-    return valid && testDate(int.parse(year), int.parse(month), int.parse(day) - 60);
+    return valid &&
+        testDate(int.parse(year), int.parse(month), int.parse(day) - 60);
   }
 
   // The Luhn algorithm to validate number.
   static int luhn(String str) {
-    var v   = 0;
+    var v = 0;
     var sum = 0;
 
     str += '';
@@ -50,7 +53,7 @@ class Personnummer {
       sum += v;
     }
 
-    return (sum/10).ceil() * 10 - sum;
+    return (sum / 10).ceil() * 10 - sum;
   }
 
   // Test year, month and day as date and see if it's the same.
@@ -58,8 +61,4 @@ class Personnummer {
     DateTime date = new DateTime(year, month, day);
     return !(date.year != year || date.month != month || date.day != day);
   }
-}
-
-main() {
-  print(Personnummer.valid(640327381));
 }
