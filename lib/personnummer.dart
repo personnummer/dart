@@ -21,7 +21,7 @@ class Personnummer {
       year = year.substring(2);
     }
 
-    if (check.length == 0) {
+    if (check.isEmpty) {
       return false;
     }
 
