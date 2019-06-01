@@ -1,18 +1,8 @@
 # personnummer [![Build Status](https://travis-ci.org/personnummer/dart.svg?branch=master)](https://travis-ci.org/personnummer/dart)
 
-> Work in progress
-
 Validate Swedish social security numbers.
 
-## Installation
-
-```
-TBA
-```
-
-## Examples
-
-### Validation
+## Example
 
 ```dart
 import 'package:personnummer/personnummer.dart';
