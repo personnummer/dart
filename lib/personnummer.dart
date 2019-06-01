@@ -39,12 +39,12 @@ class Personnummer {
 
   // The Luhn algorithm to validate number.
   static int luhn(String str) {
-    var v = 0;
-    var sum = 0;
+    int v = 0;
+    int sum = 0;
 
     str += '';
 
-    for (var i = 0, l = str.length; i < l; i++) {
+    for (int i = 0, l = str.length; i < l; i++) {
       v = int.parse(str[i]);
       v *= 2 - (i % 2);
       if (v > 9) {
