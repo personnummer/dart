@@ -1,6 +1,7 @@
 name: personnummer
 version: 1.0.0
 description: Validate Swedish social security numbers
+author: Fredrik Forsmo <fredrik.forsmo@gmail.com>
 homepage: https://github.com/personnummer/dart
 
 environment:
