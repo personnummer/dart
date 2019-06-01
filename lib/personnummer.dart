@@ -5,7 +5,7 @@ class Personnummer {
 
     RegExp reg = new RegExp(
         r'^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$');
-    RegExpMatch match = reg.firstMatch(input);
+    Match match = reg.firstMatch(input);
 
     if (match == null) {
       return false;
