@@ -1,3 +1,7 @@
+## 1.0.2
+
+- Fix package issue with changelog.
+
 ## 1.0.1
 
 - Add changelog
