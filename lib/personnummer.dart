@@ -11,11 +11,9 @@ class Personnummer {
       return false;
     }
 
-    String century = match[1];
     String year = match[2];
     String month = match[3];
     String day = match[4];
-    String sep = match[5];
     String nm = match[6];
     String check = match[7];
 
