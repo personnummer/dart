@@ -1,5 +1,5 @@
 class Personnummer {
-  // Validate Swedish social security numbers. String or number is allowed.
+  /// Validate Swedish social security numbers. String or number is allowed.
   static bool valid(dynamic input) {
     input = input.toString();
 
@@ -35,7 +35,7 @@ class Personnummer {
         testDate(int.parse(year), int.parse(month), int.parse(day) - 60);
   }
 
-  // The Luhn algorithm to validate number.
+  /// The Luhn algorithm to validate number.
   static int luhn(String str) {
     int v = 0;
     int sum = 0;
@@ -54,7 +54,7 @@ class Personnummer {
     return (sum / 10).ceil() * 10 - sum;
   }
 
-  // Test year, month and day as date and see if it's the same.
+  /// Test year, month and day as date and see if it's the same.
   static bool testDate(int year, int month, int day) {
     DateTime date = new DateTime(year, month, day);
     return !(date.year != year || date.month != month || date.day != day);
