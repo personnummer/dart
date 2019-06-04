@@ -62,7 +62,6 @@ class Personnummer {
       int baseYear;
       if (sep == '+') {
         baseYear = (new DateTime(DateTime.now().year - 100)).year;
-        print(baseYear);
       } else {
         baseYear = DateTime.now().year;
       }
