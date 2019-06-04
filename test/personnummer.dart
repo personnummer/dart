@@ -45,11 +45,21 @@ void main() {
   test('should validate co-ordination numbers', () {
     expect(true, Personnummer.valid('701063-2391'));
     expect(true, Personnummer.valid('640883-3231'));
+    expect(true, Personnummer.valid(7010632391));
+    expect(true, Personnummer.valid(6408833231));
   });
 
   test('should not validate wrong co-ordination numbers', () {
     expect(false, Personnummer.valid('900161-0017'));
     expect(false, Personnummer.valid('640893-3231'));
+    expect(false, Personnummer.valid('6102802424'));
+  });
+
+  test('should not accept co-ordination numbers', () {
+    expect(false, Personnummer.valid('701063-2391', false));
+    expect(false, Personnummer.valid('640883-3231', false));
+    expect(false, Personnummer.valid(7010632391, false));
+    expect(false, Personnummer.valid(6408833231, false));
   });
 
   test('should format input values correct', () {

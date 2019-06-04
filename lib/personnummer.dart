@@ -3,7 +3,7 @@ import 'dart:collection';
 class Personnummer {
   /// Validates Swedish social security numbers. Both string and numbers are allowed.
   /// Returns a `true` if the input value is a valid Swedish social security number.
-  static bool valid(dynamic input) {
+  static bool valid(dynamic input, [bool includeCoordinationNumber = true]) {
     HashMap parts = getParts(input);
 
     if (parts.isEmpty) {
@@ -14,6 +14,10 @@ class Personnummer {
 
     if (valid && testDate(int.parse(parts['year']), int.parse(parts['month']), int.parse(parts['day']))) {
       return valid;
+    }
+
+    if (!includeCoordinationNumber) {
+      return false;
     }
 
     return valid &&
