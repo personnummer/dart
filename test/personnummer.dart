@@ -51,4 +51,23 @@ void main() {
     expect(false, Personnummer.valid('900161-0017'));
     expect(false, Personnummer.valid('640893-3231'));
   });
+
+  test('should format input values correct', () {
+    expect('640327-3813', Personnummer.format(6403273813));
+    expect('510818-9167', Personnummer.format('510818-9167'));
+    expect('900101-0017', Personnummer.format('19900101-0017'));
+    expect('130401+2931', Personnummer.format('19130401+2931'));
+    expect('640823-3234', Personnummer.format('196408233234'));
+    expect('000101-0107', Personnummer.format('0001010107'));
+    expect('000101-0107', Personnummer.format('000101-0107'));
+    expect('130401+2931', Personnummer.format('191304012931'));
+    expect('196403273813', Personnummer.format(6403273813, true));
+    expect('195108189167', Personnummer.format('510818-9167', true));
+    expect('199001010017', Personnummer.format('19900101-0017', true));
+    expect('191304012931', Personnummer.format('19130401+2931', true));
+    expect('196408233234', Personnummer.format('196408233234', true));
+    expect('200001010107', Personnummer.format('0001010107', true));
+    expect('200001010107', Personnummer.format('000101-0107', true));
+    expect('190001010107', Personnummer.format('000101+0107', true));
+  });
 }
