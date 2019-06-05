@@ -84,6 +84,28 @@ class Personnummer {
     return map;
   }
 
+  /// Get the age of a personnummer.
+  static int getAge(dynamic input) {
+    if (!valid(input)) {
+      return 0;
+    }
+
+    HashMap parts = getParts(input);
+    if (parts.isEmpty) {
+      return 0;
+    }
+
+    int day = int.parse(parts['day']);
+    if (day >= 61 && day <= 91) {
+      day -= 60;
+    }
+
+    DateTime u = new DateTime(int.parse(parts['century'] + parts['year']), int.parse(parts['month']), day);
+    DateTime n = DateTime.now();
+
+    return (n.difference(u).inDays/365).floor();
+  }
+
   /// Format Swedish social security numbers to official format.
   ///
   /// When [longFormat] is `true` `YYYYMMDDXXXX` will be returned and

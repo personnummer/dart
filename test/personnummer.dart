@@ -80,4 +80,16 @@ void main() {
     expect('200001010107', Personnummer.format('000101-0107', true));
     expect('190001010107', Personnummer.format('000101+0107', true));
   });
+
+  test('should test age', () {
+    expect(55, Personnummer.getAge(6403273813));
+    expect(67, Personnummer.getAge('510818-9167'));
+    expect(29, Personnummer.getAge('19900101-0017'));
+    expect(106, Personnummer.getAge('19130401+2931'));
+  });
+
+  test('should test age with co-ordination numbers', () {
+    expect(48, Personnummer.getAge('701063-2391'));
+    expect(54, Personnummer.getAge('640883-3231'));
+  });
 }
