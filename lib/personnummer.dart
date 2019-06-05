@@ -84,7 +84,7 @@ class Personnummer {
     return map;
   }
 
-  /// Get the age of a personnummer.
+  /// Get the age from a personnummer.
   static int getAge(dynamic input, [bool includeCoordinationNumber = true]) {
     if (!valid(input, includeCoordinationNumber)) {
       return 0;
