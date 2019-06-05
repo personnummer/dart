@@ -101,9 +101,8 @@ class Personnummer {
     }
 
     DateTime u = new DateTime(int.parse(parts['century'] + parts['year']), int.parse(parts['month']), day);
-    DateTime n = DateTime.now();
 
-    return (n.difference(u).inDays/365).floor();
+    return (DateTime.now().difference(u).inDays/365).floor();
   }
 
   /// Format Swedish social security numbers to official format.
