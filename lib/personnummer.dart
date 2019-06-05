@@ -85,8 +85,8 @@ class Personnummer {
   }
 
   /// Get the age of a personnummer.
-  static int getAge(dynamic input) {
-    if (!valid(input)) {
+  static int getAge(dynamic input, [bool includeCoordinationNumber = true]) {
+    if (!valid(input, includeCoordinationNumber)) {
       return 0;
     }
 

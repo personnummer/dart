@@ -92,4 +92,9 @@ void main() {
     expect(48, Personnummer.getAge('701063-2391'));
     expect(54, Personnummer.getAge('640883-3231'));
   });
+
+  test('should return empty age with co-ordination numbers', () {
+    expect(0, Personnummer.getAge('701063-2391', false));
+    expect(0, Personnummer.getAge('640883-3231', false));
+  });
 }
