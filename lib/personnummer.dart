@@ -97,6 +97,10 @@ class Personnummer {
 
     HashMap parts = getParts(input);
 
+    if (parts.isEmpty) {
+      return '';
+    }
+
     if (longFormat) {
       return parts['century'] + parts['year'] + parts['month'] + parts['day'] + parts['nm'] + parts['check'];
     }
