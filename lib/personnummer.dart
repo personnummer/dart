@@ -136,8 +136,6 @@ class Personnummer {
     int v = 0;
     int sum = 0;
 
-    str += '';
-
     for (int i = 0, l = str.length; i < l; i++) {
       v = int.parse(str[i]);
       v *= 2 - (i % 2);
