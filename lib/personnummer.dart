@@ -50,10 +50,6 @@ class Personnummer {
       return map;
     }
 
-    if (year.length == 4) {
-      year = year.substring(2);
-    }
-
     if (sep != '-' && sep != '+') {
       if ((century == null || century.isEmpty) || ((DateTime.now().year - int.parse(century + year))) < 100) {
         sep = '-';
