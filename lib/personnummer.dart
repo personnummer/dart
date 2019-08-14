@@ -50,10 +50,6 @@ class Personnummer {
       return map;
     }
 
-    if (year.length == 4) {
-      year = year.substring(2);
-    }
-
     if (sep != '-' && sep != '+') {
       if ((century == null || century.isEmpty) || ((DateTime.now().year - int.parse(century + year))) < 100) {
         sep = '-';
@@ -84,6 +80,27 @@ class Personnummer {
     return map;
   }
 
+  /// Get the age from a personnummer.
+  static int getAge(dynamic input, [bool includeCoordinationNumber = true]) {
+    if (!valid(input, includeCoordinationNumber)) {
+      return 0;
+    }
+
+    HashMap parts = getParts(input);
+    if (parts.isEmpty) {
+      return 0;
+    }
+
+    int day = int.parse(parts['day']);
+    if (day >= 61 && day <= 91) {
+      day -= 60;
+    }
+
+    DateTime u = new DateTime(int.parse(parts['century'] + parts['year']), int.parse(parts['month']), day);
+
+    return (DateTime.now().difference(u).inDays/365).floor();
+  }
+
   /// Format Swedish social security numbers to official format.
   ///
   /// When [longFormat] is `true` `YYYYMMDDXXXX` will be returned and
@@ -96,6 +113,10 @@ class Personnummer {
     }
 
     HashMap parts = getParts(input);
+
+    if (parts.isEmpty) {
+      return '';
+    }
 
     if (longFormat) {
       return parts['century'] + parts['year'] + parts['month'] + parts['day'] + parts['nm'] + parts['check'];
@@ -110,8 +131,6 @@ class Personnummer {
   static int luhn(String str) {
     int v = 0;
     int sum = 0;
-
-    str += '';
 
     for (int i = 0, l = str.length; i < l; i++) {
       v = int.parse(str[i]);
