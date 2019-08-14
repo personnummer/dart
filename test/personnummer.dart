@@ -90,6 +90,7 @@ void main() {
     expect(67, Personnummer.getAge('510818-9167'));
     expect(29, Personnummer.getAge('19900101-0017'));
     expect(106, Personnummer.getAge('19130401+2931'));
+    expect(19, Personnummer.getAge('200002296127'));
   });
 
   test('should test age with co-ordination numbers', () {
