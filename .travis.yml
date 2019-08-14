@@ -6,7 +6,6 @@ dart:
 
 dart_task:
   - test: --platform vm,firefox
-  - dartanalyzer: --fatal-infos --fatal-warnings .
 
 # Only building master means that we don't run two builds for each pull request.
 branches:
