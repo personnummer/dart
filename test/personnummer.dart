@@ -10,6 +10,10 @@ void main() {
     expect(true, Personnummer.valid('196408233234'));
     expect(true, Personnummer.valid('000101-0107'));
     expect(true, Personnummer.valid('0001010107'));
+    expect(true, Personnummer.valid('200002296127'));
+    expect(true, Personnummer.valid('200002296127'));
+    expect(true, Personnummer.valid('200002283422'));
+    expect(true, Personnummer.valid('101010-1010'));
   });
 
   test('should not validate personnummer without control digit', () {
