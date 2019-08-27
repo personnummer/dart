@@ -10,9 +10,13 @@ class Personnummer {
       return false;
     }
 
-    bool valid = luhn(parts['year'] + parts['month'] + parts['day'] + parts['nm']) == int.parse(parts['check']);
+    bool valid =
+        luhn(parts['year'] + parts['month'] + parts['day'] + parts['nm']) ==
+            int.parse(parts['check']);
 
-    if (valid && testDate(int.parse(parts['year']), int.parse(parts['month']), int.parse(parts['day']))) {
+    if (valid &&
+        testDate(int.parse(parts['year']), int.parse(parts['month']),
+            int.parse(parts['day']))) {
       return valid;
     }
 
@@ -21,7 +25,8 @@ class Personnummer {
     }
 
     return valid &&
-        testDate(int.parse(parts['year']), int.parse(parts['month']), int.parse(parts['day']) - 60);
+        testDate(int.parse(parts['year']), int.parse(parts['month']),
+            int.parse(parts['day']) - 60);
   }
 
   /// Parse Swedish social security numbers and get the parts.
@@ -51,7 +56,8 @@ class Personnummer {
     }
 
     if (sep != '-' && sep != '+') {
-      if ((century == null || century.isEmpty) || ((DateTime.now().year - int.parse(century + year))) < 100) {
+      if ((century == null || century.isEmpty) ||
+          ((DateTime.now().year - int.parse(century + year))) < 100) {
         sep = '-';
       } else {
         sep = '+';
@@ -66,7 +72,9 @@ class Personnummer {
         baseYear = DateTime.now().year;
       }
 
-      century = (baseYear - (baseYear - int.parse(year)) % 100).toString().substring(0, 2);
+      century = (baseYear - (baseYear - int.parse(year)) % 100)
+          .toString()
+          .substring(0, 2);
     }
 
     map['century'] = century;
@@ -96,10 +104,11 @@ class Personnummer {
       day -= 60;
     }
 
-    DateTime u = new DateTime(int.parse(parts['century'] + parts['year']), int.parse(parts['month']), day);
+    DateTime u = new DateTime(int.parse(parts['century'] + parts['year']),
+        int.parse(parts['month']), day);
     DateTime dt = dateTimeNow == null ? DateTime.now() : dateTimeNow;
 
-    return (dt.difference(u).inMilliseconds/3.15576e+10).floor();
+    return (dt.difference(u).inMilliseconds / 3.15576e+10).floor();
   }
 
   /// Format Swedish social security numbers to official format.
@@ -120,10 +129,20 @@ class Personnummer {
     }
 
     if (longFormat) {
-      return parts['century'] + parts['year'] + parts['month'] + parts['day'] + parts['nm'] + parts['check'];
+      return parts['century'] +
+          parts['year'] +
+          parts['month'] +
+          parts['day'] +
+          parts['nm'] +
+          parts['check'];
     }
 
-    return parts['year'] + parts['month'] + parts['day'] + parts['sep'] + parts['nm'] + parts['check'];
+    return parts['year'] +
+        parts['month'] +
+        parts['day'] +
+        parts['sep'] +
+        parts['nm'] +
+        parts['check'];
   }
 
   /// Luhn/mod10 algorithm. Used to calculate a checksum from the passed value
