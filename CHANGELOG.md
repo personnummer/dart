@@ -2,7 +2,7 @@
 
 * Added `getAge`
 * Added `format`
-* Follow personnummer spec.
+* Follows personnummer spec.
 
 ## 1.0.2
 
