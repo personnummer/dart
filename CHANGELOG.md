@@ -1,3 +1,9 @@
+## 2.0.0
+
+* Added `getAge`
+* Added `format`
+* Follow personnummer spec.
+
 ## 1.0.2
 
 - Fix package issue with changelog.
