@@ -2,6 +2,8 @@ import 'package:test/test.dart';
 import 'package:personnummer/personnummer.dart';
 
 void main() {
+  Personnummer.dateTimeNow = new DateTime(2019, 7, 13);
+
   test('should validate personnummer with control digit', () {
     expect(true, Personnummer.valid(6403273813));
     expect(true, Personnummer.valid('510818-9167'));

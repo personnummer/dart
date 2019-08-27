@@ -97,8 +97,9 @@ class Personnummer {
     }
 
     DateTime u = new DateTime(int.parse(parts['century'] + parts['year']), int.parse(parts['month']), day);
+    DateTime dt = dateTimeNow == null ? DateTime.now() : dateTimeNow;
 
-    return (DateTime.now().difference(u).inMilliseconds/3.15576e+10).floor();
+    return (dt.difference(u).inMilliseconds/3.15576e+10).floor();
   }
 
   /// Format Swedish social security numbers to official format.
@@ -150,4 +151,8 @@ class Personnummer {
     DateTime date = new DateTime(year, month, day);
     return !(date.year != year || date.month != month || date.day != day);
   }
+
+  // Custom DateTime that should be used
+  // to modifiy DateTime.now.
+  static DateTime dateTimeNow;
 }
