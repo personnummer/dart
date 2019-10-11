@@ -1,6 +1,28 @@
 import 'package:test/test.dart';
 import 'package:personnummer/personnummer.dart';
 
+var invalidNumbers = [
+  null,
+  [],
+  {},
+  false,
+  true,
+  1122334455,
+  '112233-4455',
+  '19112233-4455',
+  '9999999999',
+  '199999999999',
+  '9913131315',
+  '9911311232',
+  '19990919_3766',
+  '990919_3766',
+  '199909193776',
+  'Just a string',
+  '990919+3776',
+  '990919-3776',
+  '9909193776',
+];
+
 void main() {
   Personnummer.dateTimeNow = new DateTime(2019, 7, 13);
 
@@ -26,26 +48,7 @@ void main() {
   });
 
   test('should not validate wrong personnummer or wrong types', () {
-    expect(false, Personnummer.valid(null));
-    expect(false, Personnummer.valid([]));
-    expect(false, Personnummer.valid({}));
-    expect(false, Personnummer.valid(false));
-    expect(false, Personnummer.valid(true));
-    expect(false, Personnummer.valid(1122334455));
-    expect(false, Personnummer.valid('112233-4455'));
-    expect(false, Personnummer.valid('19112233-4455'));
-    expect(false, Personnummer.valid('9999999999'));
-    expect(false, Personnummer.valid('199999999999'));
-    expect(false, Personnummer.valid('9913131315'));
-    expect(false, Personnummer.valid('9911311232'));
-    expect(false, Personnummer.valid('9902291237'));
-    expect(false, Personnummer.valid('19990919_3766'));
-    expect(false, Personnummer.valid('990919_3766'));
-    expect(false, Personnummer.valid('199909193776'));
-    expect(false, Personnummer.valid('Just a string'));
-    expect(false, Personnummer.valid('990919+3776'));
-    expect(false, Personnummer.valid('990919-3776'));
-    expect(false, Personnummer.valid('9909193776'));
+    invalidNumbers.forEach((n) => expect(false, Personnummer.valid(n)));
   });
 
   test('should validate co-ordination numbers', () {
