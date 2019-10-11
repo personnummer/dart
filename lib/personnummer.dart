@@ -1,10 +1,28 @@
 import 'dart:collection';
-import './personnumer_exception.dart';
+
+class PersonnummerException implements Exception {
+  String cause = 'Invalid swedish social security number';
+  PersonnummerException([this.cause]);
+}
+
+class PersonnummerOptions {
+  /// Include co-ordination number. Default `true`.
+  final bool includeCoordinationNumber;
+  /// When `true` then `YYYYMMDDXXXX` will be returned.
+  /// when `false` then `YYMMDD-XXXX` will be returned.
+  ///
+  /// Tax office says both are official.
+  final bool longFormat;
+
+  const PersonnummerOptions({ this.includeCoordinationNumber: true, this.longFormat: false });
+}
+
+const defaultOptions = const PersonnummerOptions();
 
 class Personnummer {
   /// Validates Swedish social security numbers. Both string and numbers are allowed.
-  /// Returns a `true` if the input value is a valid Swedish social security number.
-  static bool valid(dynamic input, [bool includeCoordinationNumber = true]) {
+  /// Returns `true` if the input value is a valid Swedish social security number.
+  static bool valid(dynamic input, [PersonnummerOptions opts = defaultOptions]) {
     HashMap parts = getParts(input);
 
     if (parts.isEmpty) {
@@ -21,7 +39,7 @@ class Personnummer {
       return valid;
     }
 
-    if (!includeCoordinationNumber) {
+    if (!opts.includeCoordinationNumber) {
       return false;
     }
 
@@ -31,7 +49,7 @@ class Personnummer {
   }
 
   /// Parse Swedish social security numbers and get the parts.
-  /// Returns a HashMap with the parts.
+  /// Returns `HashMap` with the parts.
   static HashMap getParts(dynamic input) {
     HashMap map = new HashMap();
     input = input.toString();
@@ -90,8 +108,8 @@ class Personnummer {
   }
 
   /// Get the age from a personnummer.
-  static int getAge(dynamic input, [bool includeCoordinationNumber = true]) {
-    if (!valid(input, includeCoordinationNumber)) {
+  static int getAge(dynamic input, [PersonnummerOptions opts = defaultOptions]) {
+    if (!valid(input, opts)) {
       throw new PersonnummerException();
     }
 
@@ -113,12 +131,7 @@ class Personnummer {
   }
 
   /// Format Swedish social security numbers to official format.
-  ///
-  /// When [longFormat] is `true` `YYYYMMDDXXXX` will be returned and
-  /// when `false` `YYMMDD-XXXX` will be returned.
-  ///
-  /// Tax office says both are official.
-  static String format(dynamic input, [bool longFormat = false]) {
+  static String format(dynamic input, [PersonnummerOptions opts = defaultOptions]) {
     if (!valid(input)) {
       throw new PersonnummerException();
     }
@@ -129,7 +142,7 @@ class Personnummer {
       throw new PersonnummerException();
     }
 
-    if (longFormat) {
+    if (opts.longFormat) {
       return parts['century'] +
           parts['year'] +
           parts['month'] +
@@ -148,14 +161,14 @@ class Personnummer {
 
   // Check if a Swedish social security number is for a female.
   /// Returns `true` if it's a female.
-  static bool isFemale(dynamic input, [bool includeCoordinationNumber = true]) {
-    return !isMale(input, includeCoordinationNumber);
+  static bool isFemale(dynamic input, [PersonnummerOptions opts = defaultOptions]) {
+    return !isMale(input, opts);
   }
 
   // Check if a Swedish social security number is for a male.
   /// Returns `true` if it's a male.
-  static bool isMale(dynamic input, [bool includeCoordinationNumber = true]) {
-    if (!valid(input, includeCoordinationNumber)) {
+  static bool isMale(dynamic input, [PersonnummerOptions opts = defaultOptions]) {
+    if (!valid(input, opts)) {
       throw new PersonnummerException();
     }
 

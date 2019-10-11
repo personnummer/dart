@@ -65,10 +65,11 @@ void main() {
   });
 
   test('should not accept co-ordination numbers', () {
-    expect(false, Personnummer.valid('701063-2391', false));
-    expect(false, Personnummer.valid('640883-3231', false));
-    expect(false, Personnummer.valid(7010632391, false));
-    expect(false, Personnummer.valid(6408833231, false));
+    var opts = new PersonnummerOptions(includeCoordinationNumber: false);
+    expect(false, Personnummer.valid('701063-2391', opts));
+    expect(false, Personnummer.valid('640883-3231', opts));
+    expect(false, Personnummer.valid(7010632391, opts));
+    expect(false, Personnummer.valid(6408833231, opts));
   });
 
   test('should format input values correct', () {
@@ -80,14 +81,16 @@ void main() {
     expect('000101-0107', Personnummer.format('0001010107'));
     expect('000101-0107', Personnummer.format('000101-0107'));
     expect('130401+2931', Personnummer.format('191304012931'));
-    expect('196403273813', Personnummer.format(6403273813, true));
-    expect('195108189167', Personnummer.format('510818-9167', true));
-    expect('199001010017', Personnummer.format('19900101-0017', true));
-    expect('191304012931', Personnummer.format('19130401+2931', true));
-    expect('196408233234', Personnummer.format('196408233234', true));
-    expect('200001010107', Personnummer.format('0001010107', true));
-    expect('200001010107', Personnummer.format('000101-0107', true));
-    expect('190001010107', Personnummer.format('000101+0107', true));
+
+    var opts = new PersonnummerOptions(longFormat: true);
+    expect('196403273813', Personnummer.format(6403273813, opts));
+    expect('195108189167', Personnummer.format('510818-9167', opts));
+    expect('199001010017', Personnummer.format('19900101-0017', opts));
+    expect('191304012931', Personnummer.format('19130401+2931', opts));
+    expect('196408233234', Personnummer.format('196408233234', opts));
+    expect('200001010107', Personnummer.format('0001010107', opts));
+    expect('200001010107', Personnummer.format('000101-0107', opts));
+    expect('190001010107', Personnummer.format('000101+0107', opts));
   });
 
   test('should test format with invalid numbers', () {
@@ -124,10 +127,11 @@ void main() {
   });
 
   test('should test sex', () {
-    expect(true, Personnummer.isMale(6403273813, false));
-    expect(false, Personnummer.isFemale(6403273813, false));
-    expect(true, Personnummer.isFemale('510818-9167', false));
-    expect(false, Personnummer.isMale('510818-9167', false));
+    var opts = new PersonnummerOptions(includeCoordinationNumber: false);
+    expect(true, Personnummer.isMale(6403273813, opts));
+    expect(false, Personnummer.isFemale(6403273813, opts));
+    expect(true, Personnummer.isFemale('510818-9167', opts));
+    expect(false, Personnummer.isMale('510818-9167', opts));
   });
 
   test('should test sex with co-ordination numbers', () {
