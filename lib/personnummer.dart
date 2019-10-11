@@ -165,7 +165,7 @@ class Personnummer {
       throw new PersonnummerException();
     }
 
-    var sexDigit = parts['nm'].substring(parts['nm'].length -1);
+    var sexDigit = parts['nm'].substring(parts['nm'].length - 1);
 
     return int.parse(sexDigit) % 2 == 1;
   }
