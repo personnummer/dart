@@ -1,4 +1,5 @@
 import 'dart:collection';
+import './personnumer_exception.dart';
 
 class Personnummer {
   /// Validates Swedish social security numbers. Both string and numbers are allowed.
@@ -95,12 +96,12 @@ class Personnummer {
   /// Get the age from a personnummer.
   static int getAge(dynamic input, [bool includeCoordinationNumber = true]) {
     if (!valid(input, includeCoordinationNumber)) {
-      return 0;
+      throw new PersonnummerException();
     }
 
     HashMap parts = getParts(input);
     if (parts.isEmpty) {
-      return 0;
+      throw new PersonnummerException();
     }
 
     int day = int.parse(parts['day']);
@@ -123,13 +124,13 @@ class Personnummer {
   /// Tax office says both are official.
   static String format(dynamic input, [bool longFormat = false]) {
     if (!valid(input)) {
-      return '';
+      throw new PersonnummerException();
     }
 
     HashMap parts = getParts(input);
 
     if (parts.isEmpty) {
-      return '';
+      throw new PersonnummerException();
     }
 
     if (longFormat) {
@@ -147,6 +148,30 @@ class Personnummer {
         parts['sep'] +
         parts['nm'] +
         parts['check'];
+  }
+
+  // Check if a Swedish social security number is for a female.
+  /// Returns `true` if it's a female.
+  static bool isFemale(dynamic input, [bool includeCoordinationNumber = true]) {
+    return !isMale(input, includeCoordinationNumber);
+  }
+
+  // Check if a Swedish social security number is for a male.
+  /// Returns `true` if it's a male.
+  static bool isMale(dynamic input, [bool includeCoordinationNumber = true]) {
+    if (!valid(input, includeCoordinationNumber)) {
+      throw new PersonnummerException();
+    }
+
+    HashMap parts = getParts(input);
+
+    if (parts.isEmpty) {
+      throw new PersonnummerException();
+    }
+
+    var sexDigit = parts['nm'].substring(parts['nm'].length - 1);
+
+    return int.parse(sexDigit) % 2 == 1;
   }
 
   /// Luhn/mod10 algorithm. Used to calculate a checksum from the passed value

@@ -97,6 +97,16 @@ void main() {
     expect('121212-1212', Personnummer.format('20121212+1212'));
   });
 
+  test('should test format with invalid numbers', () {
+    invalidNumbers.forEach((n) {
+      try {
+        Personnummer.format(n);
+      } catch (e) {
+        expect(true, e != null);
+      }
+    });
+  });
+
   test('should test age', () {
     expect(55, Personnummer.getAge(6403273813));
     expect(67, Personnummer.getAge('510818-9167'));
@@ -110,8 +120,43 @@ void main() {
     expect(54, Personnummer.getAge('640883-3231'));
   });
 
-  test('should return empty age with co-ordination numbers', () {
-    expect(0, Personnummer.getAge('701063-2391', false));
-    expect(0, Personnummer.getAge('640883-3231', false));
+  test('should test get age with invalid numbers', () {
+    invalidNumbers.forEach((n) {
+      try {
+        Personnummer.getAge(n);
+      } catch (e) {
+        expect(true, e != null);
+      }
+    });
+  });
+
+  test('should test sex', () {
+    expect(true, Personnummer.isMale(6403273813, false));
+    expect(false, Personnummer.isFemale(6403273813, false));
+    expect(true, Personnummer.isFemale('510818-9167', false));
+    expect(false, Personnummer.isMale('510818-9167', false));
+  });
+
+  test('should test sex with co-ordination numbers', () {
+    expect(true, Personnummer.isMale('701063-2391'));
+    expect(false, Personnummer.isFemale('701063-2391'));
+    expect(true, Personnummer.isFemale('640883-3223'));
+    expect(false, Personnummer.isMale('640883-3223'));
+  });
+
+  test('should test sex with invalid numbers', () {
+    invalidNumbers.forEach((n) {
+      try {
+        Personnummer.isMale(n);
+      } catch (e) {
+        expect(true, e != null);
+      }
+
+      try {
+        Personnummer.isFemale(n);
+      } catch (e) {
+        expect(true, e != null);
+      }
+    });
   });
 }
