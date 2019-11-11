@@ -87,6 +87,13 @@ void main() {
     expect('190001010107', Personnummer.format('000101+0107', true));
   });
 
+  test('should format input values and replace separator with the right one', () {
+    expect('130401+2931', Personnummer.format('19130401-2931'));
+    expect('900101-0017', Personnummer.format('19900101+0017'));
+    expect('121212+1212', Personnummer.format('19121212-1212'));
+    expect('121212-1212', Personnummer.format('20121212+1212'));
+  });
+
   test('should test age', () {
     expect(55, Personnummer.getAge(6403273813));
     expect(67, Personnummer.getAge('510818-9167'));

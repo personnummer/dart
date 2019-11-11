@@ -55,15 +55,6 @@ class Personnummer {
       return map;
     }
 
-    if (sep != '-' && sep != '+') {
-      if ((century == null || century.isEmpty) ||
-          ((DateTime.now().year - int.parse(century + year))) < 100) {
-        sep = '-';
-      } else {
-        sep = '+';
-      }
-    }
-
     if (century == null || century.isEmpty) {
       int baseYear;
       if (sep == '+') {
@@ -75,6 +66,19 @@ class Personnummer {
       century = (baseYear - (baseYear - int.parse(year)) % 100)
           .toString()
           .substring(0, 2);
+    }
+
+    if (sep == null || sep.isEmpty) {
+      sep = '-';
+    }
+
+    // Set the right separator to match the full year.
+    // >= 100 should use + and < 100 should use -
+    var yearDiff = DateTime.now().year - int.parse(century + year);
+    if (sep == '-' && yearDiff >= 100) {
+      sep = '+';
+    } else if (sep == '+' && yearDiff < 100) {
+      sep = '-';
     }
 
     map['century'] = century;
