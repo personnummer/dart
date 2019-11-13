@@ -8,13 +8,15 @@ class PersonnummerException implements Exception {
 class PersonnummerOptions {
   /// Include co-ordination number. Default `true`.
   final bool includeCoordinationNumber;
+
   /// When `true` then `YYYYMMDDXXXX` will be returned.
   /// when `false` then `YYMMDD-XXXX` will be returned.
   ///
   /// Tax office says both are official.
   final bool longFormat;
 
-  const PersonnummerOptions({ this.includeCoordinationNumber: true, this.longFormat: false });
+  const PersonnummerOptions(
+      {this.includeCoordinationNumber: true, this.longFormat: false});
 }
 
 const defaultOptions = const PersonnummerOptions();
@@ -22,7 +24,8 @@ const defaultOptions = const PersonnummerOptions();
 class Personnummer {
   /// Validates Swedish social security numbers. Both string and numbers are allowed.
   /// Returns `true` if the input value is a valid Swedish social security number.
-  static bool valid(dynamic input, [PersonnummerOptions opts = defaultOptions]) {
+  static bool valid(dynamic input,
+      [PersonnummerOptions opts = defaultOptions]) {
     HashMap parts = getParts(input);
 
     if (parts.isEmpty) {
@@ -74,15 +77,6 @@ class Personnummer {
       return map;
     }
 
-    if (sep != '-' && sep != '+') {
-      if ((century == null || century.isEmpty) ||
-          ((DateTime.now().year - int.parse(century + year))) < 100) {
-        sep = '-';
-      } else {
-        sep = '+';
-      }
-    }
-
     if (century == null || century.isEmpty) {
       int baseYear;
       if (sep == '+') {
@@ -94,6 +88,19 @@ class Personnummer {
       century = (baseYear - (baseYear - int.parse(year)) % 100)
           .toString()
           .substring(0, 2);
+    }
+
+    if (sep == null || sep.isEmpty) {
+      sep = '-';
+    }
+
+    // Set the right separator to match the full year.
+    // >= 100 should use + and < 100 should use -
+    var yearDiff = DateTime.now().year - int.parse(century + year);
+    if (sep == '-' && yearDiff >= 100) {
+      sep = '+';
+    } else if (sep == '+' && yearDiff < 100) {
+      sep = '-';
     }
 
     map['century'] = century;
@@ -108,7 +115,8 @@ class Personnummer {
   }
 
   /// Get the age from a personnummer.
-  static int getAge(dynamic input, [PersonnummerOptions opts = defaultOptions]) {
+  static int getAge(dynamic input,
+      [PersonnummerOptions opts = defaultOptions]) {
     if (!valid(input, opts)) {
       throw new PersonnummerException();
     }
@@ -131,7 +139,8 @@ class Personnummer {
   }
 
   /// Format Swedish social security numbers to official format.
-  static String format(dynamic input, [PersonnummerOptions opts = defaultOptions]) {
+  static String format(dynamic input,
+      [PersonnummerOptions opts = defaultOptions]) {
     if (!valid(input)) {
       throw new PersonnummerException();
     }
@@ -161,13 +170,15 @@ class Personnummer {
 
   // Check if a Swedish social security number is for a female.
   /// Returns `true` if it's a female.
-  static bool isFemale(dynamic input, [PersonnummerOptions opts = defaultOptions]) {
+  static bool isFemale(dynamic input,
+      [PersonnummerOptions opts = defaultOptions]) {
     return !isMale(input, opts);
   }
 
   // Check if a Swedish social security number is for a male.
   /// Returns `true` if it's a male.
-  static bool isMale(dynamic input, [PersonnummerOptions opts = defaultOptions]) {
+  static bool isMale(dynamic input,
+      [PersonnummerOptions opts = defaultOptions]) {
     if (!valid(input, opts)) {
       throw new PersonnummerException();
     }
