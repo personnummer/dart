@@ -1,5 +1,9 @@
 import 'dart:collection';
-import './personnumer_exception.dart';
+
+class PersonnummerException implements Exception {
+  String cause = 'Invalid swedish social security number';
+  PersonnummerException([this.cause]);
+}
 
 class Personnummer {
   /// Validates Swedish social security numbers. Both string and numbers are allowed.
