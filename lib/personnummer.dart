@@ -65,25 +65,19 @@ class Personnummer {
       if (sep == '+') {
         baseYear = (new DateTime(DateTime.now().year - 100)).year;
       } else {
+        sep = '-';
         baseYear = DateTime.now().year;
       }
 
       century = (baseYear - (baseYear - int.parse(year)) % 100)
           .toString()
           .substring(0, 2);
-    }
-
-    if (sep == null || sep.isEmpty) {
-      sep = '-';
-    }
-
-    // Set the right separator to match the full year.
-    // >= 100 should use + and < 100 should use -
-    var yearDiff = DateTime.now().year - int.parse(century + year);
-    if (sep == '-' && yearDiff >= 100) {
-      sep = '+';
-    } else if (sep == '+' && yearDiff < 100) {
-      sep = '-';
+    } else {
+      if ((DateTime.now().year - int.parse(century + year)) < 100) {
+        sep = '-';
+      } else {
+        sep = '+';
+      }
     }
 
     map['century'] = century;
