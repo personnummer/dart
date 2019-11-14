@@ -73,7 +73,7 @@ class Personnummer {
           .toString()
           .substring(0, 2);
     } else {
-      if ((DateTime.now().year - int.parse(century + year)) < 100) {
+      if (DateTime.now().year - int.parse(century + year) < 100) {
         sep = '-';
       } else {
         sep = '+';
