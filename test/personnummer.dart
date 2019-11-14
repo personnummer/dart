@@ -19,8 +19,10 @@ void main() {
   Personnummer.dateTimeNow = new DateTime(2019, 7, 13);
 
   test('should validate personnummer with control digit', () {
+    expect(true, Personnummer.valid(8507099805));
     expect(true, Personnummer.valid('198507099805'));
     expect(true, Personnummer.valid('198507099813'));
+    expect(true, Personnummer.valid('850709-9813'));
     expect(true, Personnummer.valid('196411139808'));
   });
 
@@ -72,6 +74,7 @@ void main() {
   test('should test age', () {
     expect(34, Personnummer.getAge('198507099805'));
     expect(34, Personnummer.getAge('198507099813'));
+    expect(54, Personnummer.getAge('196411139808'));
     expect(106, Personnummer.getAge('19121212+1212'));
   });
 
