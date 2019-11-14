@@ -1,3 +1,9 @@
+## 2.1.0
+
+* Added `isMale`
+* Added `isFemale`
+* Improved `format` to replace the separator if it's not matching the full year.
+
 ## 2.0.0
 
 * Added `getAge`
