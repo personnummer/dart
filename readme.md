@@ -7,10 +7,10 @@ Validate Swedish social security numbers.
 ```dart
 import 'package:personnummer/personnummer.dart';
 
-Personnummer.valid(6403273813);
+Personnummer.valid(8507099805);
 //=> true
 
-Personnummer.valid('19130401+2931');
+Personnummer.valid('198507099805');
 //=> true
 ```
 
