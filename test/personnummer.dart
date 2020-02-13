@@ -60,6 +60,17 @@ void main() {
     expect('2', pnr.check);
   });
 
+  test('should throw errors for bad inputs when parsing', () {
+    invalidNumbers.forEach((n) {
+      try {
+        Personnummer.parse(n.toString());
+        expect(false, true);
+      } catch (e) {
+        expect(true, true);
+      }
+    });
+  });
+
   test('should format input values correct', () {
     expect('850709-9805', Personnummer.parse('19850709-9805').format());
     expect('850709-9813', Personnummer.parse('198507099813').format());
