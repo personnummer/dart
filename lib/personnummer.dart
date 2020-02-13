@@ -83,10 +83,10 @@ class Personnummer {
       match = reg.firstMatch(ssn);
 
       if (match == null) {
-        return;
+      throw new PersonnummerException();
       }
     } catch (e) {
-      return;
+      throw new PersonnummerException();
     }
 
     String century = match[1];
@@ -98,7 +98,7 @@ class Personnummer {
     String check = match[7];
 
     if (check.isEmpty) {
-      return;
+      throw new PersonnummerException();
     }
 
     if (century == null || century.isEmpty) {
@@ -141,6 +141,10 @@ class Personnummer {
 
     this.age =
         (dt.difference(u).inMilliseconds / 3.15576e+10).floor().toString();
+
+    if (!this._valid()) {
+      throw new PersonnummerException();
+    }
   }
 
   /// Test year, month and day as date and see if it's the same.
@@ -150,12 +154,29 @@ class Personnummer {
     return !(date.year != year || date.month != month || date.day != day);
   }
 
+  /// Validates Swedish social security numbers.
+  /// Returns `true` if the input value is a valid Swedish social security number.
+  bool _valid() {
+    try {
+      bool valid = this._luhn(this.year + this.month + this.day + this.num) ==
+          int.parse(this.check);
+
+      var year = int.parse(this.year);
+      var month = int.parse(this.month);
+      var day = int.parse(this.day);
+
+      if (valid && this._testDate(year, month, day)) {
+        return valid;
+      }
+
+      return valid && this._testDate(year, month, day - 60);
+    } catch (e) {
+      return false;
+    }
+  }
+
   /// Format Swedish social security numbers to official format.
   String format([bool longFormat = false]) {
-    if (!this.isValid()) {
-      throw new PersonnummerException();
-    }
-
     if (longFormat) {
       return this.century +
           this.year +
@@ -184,34 +205,9 @@ class Personnummer {
   /// Check if a Swedish social security number is for a male.
   /// Returns `true` if it's a male.
   bool isMale() {
-    if (!this.isValid()) {
-      throw new PersonnummerException();
-    }
-
     var sexDigit = this.num.substring(this.num.length - 1);
 
     return int.parse(sexDigit) % 2 == 1;
-  }
-
-  /// Validates Swedish social security numbers.
-  /// Returns `true` if the input value is a valid Swedish social security number.
-  bool isValid() {
-    try {
-      bool valid = this._luhn(this.year + this.month + this.day + this.num) ==
-          int.parse(this.check);
-
-      var year = int.parse(this.year);
-      var month = int.parse(this.month);
-      var day = int.parse(this.day);
-
-      if (valid && this._testDate(year, month, day)) {
-        return valid;
-      }
-
-      return valid && this._testDate(year, month, day - 60);
-    } catch (e) {
-      return false;
-    }
   }
 
   // Custom DateTime that should be used
@@ -227,6 +223,11 @@ class Personnummer {
   /// Validates Swedish social security numbers.
   /// Returns `true` if the input value is a valid Swedish social security number
   static bool valid(String ssn, [dynamic options = null]) {
-    return parse(ssn, options).isValid();
+    try {
+      parse(ssn, options);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }
