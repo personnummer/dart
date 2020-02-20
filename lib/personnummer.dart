@@ -83,7 +83,7 @@ class Personnummer {
       match = reg.firstMatch(ssn);
 
       if (match == null) {
-      throw new PersonnummerException();
+        throw new PersonnummerException();
       }
     } catch (e) {
       throw new PersonnummerException();
@@ -130,18 +130,6 @@ class Personnummer {
     this.num = nm;
     this.check = check;
 
-    int ageDay = int.parse(day);
-    if (ageDay >= 61 && ageDay <= 91) {
-      ageDay -= 60;
-    }
-
-    DateTime u =
-        new DateTime(int.parse(century + year), int.parse(month), ageDay);
-    DateTime dt = dateTimeNow == null ? DateTime.now() : dateTimeNow;
-
-    this.age =
-        (dt.difference(u).inMilliseconds / 3.15576e+10).floor().toString();
-
     if (!this._valid()) {
       throw new PersonnummerException();
     }
@@ -187,6 +175,20 @@ class Personnummer {
     }
 
     return this.year + this.month + this.day + this.sep + this.num + this.check;
+  }
+
+  // Get age from a Swedish social security number.
+  int getAge() {
+    int ageDay = int.parse(day);
+    if (ageDay >= 61 && ageDay <= 91) {
+      ageDay -= 60;
+    }
+
+    DateTime u =
+        new DateTime(int.parse(century + year), int.parse(month), ageDay);
+    DateTime dt = dateTimeNow == null ? DateTime.now() : dateTimeNow;
+
+    return (dt.difference(u).inMilliseconds / 3.15576e+10).floor();
   }
 
   /// Check if a Swedish social security number is a coordination number or not.

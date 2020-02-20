@@ -49,7 +49,6 @@ void main() {
 
   test('should parse personnummer and set properties', () {
     var pnr = Personnummer.parse('198507699802');
-    expect('34', pnr.age);
     expect('19', pnr.century);
     expect('1985', pnr.fullYear);
     expect('85', pnr.year);
@@ -85,15 +84,15 @@ void main() {
   });
 
   test('should test age', () {
-    expect('34', Personnummer.parse('198507099805').age);
-    expect('34', Personnummer.parse('198507099813').age);
-    expect('54', Personnummer.parse('196411139808').age);
-    expect('106', Personnummer.parse('19121212+1212').age);
+    expect(34, Personnummer.parse('198507099805').getAge());
+    expect(34, Personnummer.parse('198507099813').getAge());
+    expect(54, Personnummer.parse('196411139808').getAge());
+    expect(106, Personnummer.parse('19121212+1212').getAge());
   });
 
   test('should test age with co-ordination numbers', () {
-    expect('34', Personnummer.parse('198507699810').age);
-    expect('34', Personnummer.parse('198507699802').age);
+    expect(34, Personnummer.parse('198507699810').getAge());
+    expect(34, Personnummer.parse('198507699802').getAge());
   });
 
   test('should test sex', () {
