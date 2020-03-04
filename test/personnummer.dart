@@ -33,7 +33,8 @@ void main() {
   });
 
   test('should not validate wrong personnummer or wrong types', () {
-    invalidNumbers.forEach((n) => expect(false, Personnummer.valid(n.toString())));
+    invalidNumbers
+        .forEach((n) => expect(false, Personnummer.valid(n.toString())));
   });
 
   test('should validate co-ordination numbers', () {
@@ -78,7 +79,8 @@ void main() {
     expect('198507099813', Personnummer.parse('198507099813').format(true));
   });
 
-  test('should format input values and replace separator with the right one', () {
+  test('should format input values and replace separator with the right one',
+      () {
     expect('850709-9805', Personnummer.parse('19850709+9805').format());
     expect('121212+1212', Personnummer.parse('19121212-1212').format());
   });
