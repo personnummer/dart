@@ -1,4 +1,4 @@
-# personnummer [![Build Status](https://travis-ci.org/personnummer/dart.svg?branch=master)](https://travis-ci.org/personnummer/dart)
+# personnummer [![Build Status](https://github.com/personnummer/dart/workflows/build/badge.svg)](https://github.com/personnummer/dart/actions)
 
 Validate Swedish social security numbers.
 
