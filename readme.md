@@ -1,4 +1,4 @@
-# personnummer [![Build Status](https://github.com/personnummer/dart/workflows/build/badge.svg)](https://github.com/personnummer/dart/actions)
+# personnummer [![Build Status](https://github.com/personnummer/dart/workflows/test/badge.svg)](https://github.com/personnummer/dart/actions)
 
 Validate Swedish social security numbers.
 
