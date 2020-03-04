@@ -1,51 +1,92 @@
-import 'dart:collection';
-
 class PersonnummerException implements Exception {
   String cause = 'Invalid swedish social security number';
   PersonnummerException([this.cause]);
 }
 
 class Personnummer {
-  /// Validates Swedish social security numbers. Both string and numbers are allowed.
-  /// Returns a `true` if the input value is a valid Swedish social security number.
-  static bool valid(dynamic input, [bool includeCoordinationNumber = true]) {
-    HashMap parts = getParts(input);
+  /**
+   * Personnummer age.
+   */
+  String age = '';
 
-    if (parts.isEmpty) {
-      return false;
-    }
+  /**
+   * Personnummer century.
+   */
+  String century = '';
 
-    bool valid =
-        luhn(parts['year'] + parts['month'] + parts['day'] + parts['nm']) ==
-            int.parse(parts['check']);
+  /**
+   * Personnummer full year.
+   */
+  String fullYear = '';
 
-    if (valid &&
-        testDate(int.parse(parts['year']), int.parse(parts['month']),
-            int.parse(parts['day']))) {
-      return valid;
-    }
+  /**
+   * Personnummer year.
+   */
+  String year = '';
 
-    if (!includeCoordinationNumber) {
-      return false;
-    }
+  /**
+   * Personnummer month.
+   */
+  String month = '';
 
-    return valid &&
-        testDate(int.parse(parts['year']), int.parse(parts['month']),
-            int.parse(parts['day']) - 60);
+  /**
+   * Personnummer day.
+   */
+  String day = '';
+
+  /**
+   * Personnummer seperator.
+   */
+  String sep = '';
+
+  /**
+   * Personnummer first three of the last four numbers.
+   */
+  String num = '';
+
+  /**
+   * The last number of the personnummer.
+   */
+  String check = '';
+
+  /// Personnummer constructor.
+  Personnummer(String ssn, [dynamic options = null]) {
+    this._parse(ssn);
   }
 
-  /// Parse Swedish social security numbers and get the parts.
-  /// Returns a HashMap with the parts.
-  static HashMap getParts(dynamic input) {
-    HashMap map = new HashMap();
-    input = input.toString();
+  /// Luhn/mod10 algorithm. Used to calculate a checksum from the passed value
+  /// The checksum is returned and tested against the control number
+  /// in the social security number to make sure that it is a valid number.
+  int _luhn(String str) {
+    int v = 0;
+    int sum = 0;
 
+    for (int i = 0, l = str.length; i < l; i++) {
+      v = int.parse(str[i]);
+      v *= 2 - (i % 2);
+      if (v > 9) {
+        v -= 9;
+      }
+      sum += v;
+    }
+
+    return (sum / 10).ceil() * 10 - sum;
+  }
+
+  /// Parse Swedish social security numbers and set properties.
+  _parse(String ssn) {
     RegExp reg = new RegExp(
         r'^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$');
-    Match match = reg.firstMatch(input);
+    Match match = null;
 
-    if (match == null) {
-      return map;
+    try {
+      match = reg.firstMatch(ssn);
+
+      if (match == null) {
+        throw new PersonnummerException();
+      }
+    } catch (e) {
+      throw new PersonnummerException();
     }
 
     String century = match[1];
@@ -57,7 +98,7 @@ class Personnummer {
     String check = match[7];
 
     if (check.isEmpty) {
-      return map;
+      throw new PersonnummerException();
     }
 
     if (century == null || century.isEmpty) {
@@ -80,125 +121,115 @@ class Personnummer {
       }
     }
 
-    map['century'] = century;
-    map['year'] = year;
-    map['month'] = month;
-    map['day'] = day;
-    map['sep'] = sep;
-    map['nm'] = nm;
-    map['check'] = check;
+    this.century = century;
+    this.fullYear = century + year;
+    this.year = year;
+    this.month = month;
+    this.day = day;
+    this.sep = sep;
+    this.num = nm;
+    this.check = check;
 
-    return map;
+    if (!this._valid()) {
+      throw new PersonnummerException();
+    }
   }
 
-  /// Get the age from a personnummer.
-  static int getAge(dynamic input, [bool includeCoordinationNumber = true]) {
-    if (!valid(input, includeCoordinationNumber)) {
-      throw new PersonnummerException();
+  /// Test year, month and day as date and see if it's the same.
+  /// Returns `true` if it's the same.
+  bool _testDate(int year, int month, int day) {
+    DateTime date = new DateTime(year, month, day);
+    return !(date.year != year || date.month != month || date.day != day);
+  }
+
+  /// Validates Swedish social security numbers.
+  /// Returns `true` if the input value is a valid Swedish social security number.
+  bool _valid() {
+    try {
+      bool valid = this._luhn(this.year + this.month + this.day + this.num) ==
+          int.parse(this.check);
+
+      var year = int.parse(this.year);
+      var month = int.parse(this.month);
+      var day = int.parse(this.day);
+
+      if (valid && this._testDate(year, month, day)) {
+        return valid;
+      }
+
+      return valid && this._testDate(year, month, day - 60);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Format Swedish social security numbers to official format.
+  String format([bool longFormat = false]) {
+    if (longFormat) {
+      return this.century +
+          this.year +
+          this.month +
+          this.day +
+          this.num +
+          this.check;
     }
 
-    HashMap parts = getParts(input);
-    if (parts.isEmpty) {
-      throw new PersonnummerException();
+    return this.year + this.month + this.day + this.sep + this.num + this.check;
+  }
+
+  // Get age from a Swedish social security number.
+  int getAge() {
+    int ageDay = int.parse(day);
+    if (ageDay >= 61 && ageDay <= 91) {
+      ageDay -= 60;
     }
 
-    int day = int.parse(parts['day']);
-    if (day >= 61 && day <= 91) {
-      day -= 60;
-    }
-
-    DateTime u = new DateTime(int.parse(parts['century'] + parts['year']),
-        int.parse(parts['month']), day);
+    DateTime u =
+        new DateTime(int.parse(century + year), int.parse(month), ageDay);
     DateTime dt = dateTimeNow == null ? DateTime.now() : dateTimeNow;
 
     return (dt.difference(u).inMilliseconds / 3.15576e+10).floor();
   }
 
-  /// Format Swedish social security numbers to official format.
-  ///
-  /// When [longFormat] is `true` `YYYYMMDDXXXX` will be returned and
-  /// when `false` `YYMMDD-XXXX` will be returned.
-  ///
-  /// Tax office says both are official.
-  static String format(dynamic input, [bool longFormat = false]) {
-    if (!valid(input)) {
-      throw new PersonnummerException();
-    }
-
-    HashMap parts = getParts(input);
-
-    if (parts.isEmpty) {
-      throw new PersonnummerException();
-    }
-
-    if (longFormat) {
-      return parts['century'] +
-          parts['year'] +
-          parts['month'] +
-          parts['day'] +
-          parts['nm'] +
-          parts['check'];
-    }
-
-    return parts['year'] +
-        parts['month'] +
-        parts['day'] +
-        parts['sep'] +
-        parts['nm'] +
-        parts['check'];
+  /// Check if a Swedish social security number is a coordination number or not.
+  /// Returns `true` if it's a coordination number.
+  bool isCoordinationNumber() {
+    var day = int.parse(this.day);
+    return day >= 61 && day < 91;
   }
 
-  // Check if a Swedish social security number is for a female.
+  /// Check if a Swedish social security number is for a female.
   /// Returns `true` if it's a female.
-  static bool isFemale(dynamic input, [bool includeCoordinationNumber = true]) {
-    return !isMale(input, includeCoordinationNumber);
+  bool isFemale() {
+    return !isMale();
   }
 
-  // Check if a Swedish social security number is for a male.
+  /// Check if a Swedish social security number is for a male.
   /// Returns `true` if it's a male.
-  static bool isMale(dynamic input, [bool includeCoordinationNumber = true]) {
-    if (!valid(input, includeCoordinationNumber)) {
-      throw new PersonnummerException();
-    }
-
-    HashMap parts = getParts(input);
-
-    if (parts.isEmpty) {
-      throw new PersonnummerException();
-    }
-
-    var sexDigit = parts['nm'].substring(parts['nm'].length - 1);
+  bool isMale() {
+    var sexDigit = this.num.substring(this.num.length - 1);
 
     return int.parse(sexDigit) % 2 == 1;
-  }
-
-  /// Luhn/mod10 algorithm. Used to calculate a checksum from the passed value
-  /// The checksum is returned and tested against the control number
-  /// in the social security number to make sure that it is a valid number.
-  static int luhn(String str) {
-    int v = 0;
-    int sum = 0;
-
-    for (int i = 0, l = str.length; i < l; i++) {
-      v = int.parse(str[i]);
-      v *= 2 - (i % 2);
-      if (v > 9) {
-        v -= 9;
-      }
-      sum += v;
-    }
-
-    return (sum / 10).ceil() * 10 - sum;
-  }
-
-  /// Test year, month and day as date and see if it's the same.
-  /// Returns `true` if it's the same.
-  static bool testDate(int year, int month, int day) {
-    DateTime date = new DateTime(year, month, day);
-    return !(date.year != year || date.month != month || date.day != day);
   }
 
   // Custom DateTime that should be used
   // to modifiy DateTime.now.
   static DateTime dateTimeNow;
+
+  /// Parse Swedish social security numbers.
+  /// Returns `Personnummer` class.
+  static Personnummer parse(String ssn, [dynamic options = null]) {
+    return new Personnummer(ssn, options);
+  }
+
+  /// Validates Swedish social security numbers.
+  /// Returns `true` if the input value is a valid Swedish social security number
+  static bool valid(String ssn, [dynamic options = null]) {
+    try {
+      parse(ssn, options);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }

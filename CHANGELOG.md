@@ -1,3 +1,9 @@
+## 3.0.0
+
+> The one that breaks everything
+
+* Brand new version that follow the new [specification](https://github.com/personnummer/meta#package-specification-v3).
+
 ## 2.1.0
 
 * Added `isMale`
