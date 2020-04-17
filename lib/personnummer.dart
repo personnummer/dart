@@ -180,7 +180,7 @@ class Personnummer {
   // Get age from a Swedish social security number.
   int getAge() {
     int ageDay = int.parse(day);
-    if (ageDay >= 61 && ageDay <= 91) {
+    if (this.isCoordinationNumber()) {
       ageDay -= 60;
     }
 
@@ -195,7 +195,7 @@ class Personnummer {
   /// Returns `true` if it's a coordination number.
   bool isCoordinationNumber() {
     var day = int.parse(this.day);
-    return day >= 61 && day < 91;
+    return this._testDate(int.parse(this.year), int.parse(this.month), day - 60);
   }
 
   /// Check if a Swedish social security number is for a female.
