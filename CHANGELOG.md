@@ -1,3 +1,7 @@
+## 3.0.2
+
+* Improve package health score by using [pana tool](https://github.com/dart-lang/pana) to analyze the code.
+
 ## 3.0.1
 
 * Improve `isCoordinationNumber` to test the date
