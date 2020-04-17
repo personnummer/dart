@@ -4,49 +4,31 @@ class PersonnummerException implements Exception {
 }
 
 class Personnummer {
-  /**
-   * Personnummer age.
-   */
+  /// Personnummer age.
   String age = '';
 
-  /**
-   * Personnummer century.
-   */
+  /// Personnummer century.
   String century = '';
 
-  /**
-   * Personnummer full year.
-   */
+  /// Personnummer full year.
   String fullYear = '';
 
-  /**
-   * Personnummer year.
-   */
+  /// Personnummer year.
   String year = '';
 
-  /**
-   * Personnummer month.
-   */
+  /// Personnummer month.
   String month = '';
 
-  /**
-   * Personnummer day.
-   */
+  /// Personnummer day.
   String day = '';
 
-  /**
-   * Personnummer seperator.
-   */
+  /// Personnummer seperator.
   String sep = '';
 
-  /**
-   * Personnummer first three of the last four numbers.
-   */
+  /// Personnummer first three of the last four numbers.
   String num = '';
 
-  /**
-   * The last number of the personnummer.
-   */
+  /// The last number of the personnummer.
   String check = '';
 
   /// Personnummer constructor.
