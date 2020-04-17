@@ -32,18 +32,18 @@ class Personnummer {
   String check = '';
 
   /// Personnummer constructor.
-  Personnummer(String ssn, [dynamic options = null]) {
-    this._parse(ssn);
+  Personnummer(String ssn, [dynamic options]) {
+    _parse(ssn);
   }
 
   /// Luhn/mod10 algorithm. Used to calculate a checksum from the passed value
   /// The checksum is returned and tested against the control number
   /// in the social security number to make sure that it is a valid number.
   int _luhn(String str) {
-    int v = 0;
-    int sum = 0;
+    var v = 0;
+    var sum = 0;
 
-    for (int i = 0, l = str.length; i < l; i++) {
+    for (var i = 0, l = str.length; i < l; i++) {
       v = int.parse(str[i]);
       v *= 2 - (i % 2);
       if (v > 9) {
@@ -56,71 +56,71 @@ class Personnummer {
   }
 
   /// Parse Swedish social security numbers and set properties.
-  _parse(String ssn) {
-    RegExp reg = new RegExp(
+  void _parse(String ssn) {
+    var reg = RegExp(
         r'^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$');
-    Match match = null;
+    var match;
 
     try {
       match = reg.firstMatch(ssn);
 
       if (match == null) {
-        throw new PersonnummerException();
+        throw PersonnummerException();
       }
     } catch (e) {
-      throw new PersonnummerException();
+      throw PersonnummerException();
     }
 
-    String century = match[1];
-    String year = match[2];
-    String month = match[3];
-    String day = match[4];
-    String sep = match[5];
-    String nm = match[6];
-    String check = match[7];
+    var _century = match[1];
+    var _year = match[2];
+    var _month = match[3];
+    var _day = match[4];
+    var _sep = match[5];
+    var _nm = match[6];
+    var _check = match[7];
 
-    if (check.isEmpty) {
-      throw new PersonnummerException();
+    if (_check.isEmpty) {
+      throw PersonnummerException();
     }
 
-    if (century == null || century.isEmpty) {
-      int baseYear;
-      if (sep == '+') {
-        baseYear = (new DateTime(DateTime.now().year - 100)).year;
+    if (_century == null || _century.isEmpty) {
+      var baseYear;
+      if (_sep == '+') {
+        baseYear = (DateTime(DateTime.now().year - 100)).year;
       } else {
-        sep = '-';
+        _sep = '-';
         baseYear = DateTime.now().year;
       }
 
-      century = (baseYear - (baseYear - int.parse(year)) % 100)
+      _century = (baseYear - (baseYear - int.parse(_year)) % 100)
           .toString()
           .substring(0, 2);
     } else {
-      if (DateTime.now().year - int.parse(century + year) < 100) {
-        sep = '-';
+      if (DateTime.now().year - int.parse(_century + _year) < 100) {
+        _sep = '-';
       } else {
-        sep = '+';
+        _sep = '+';
       }
     }
 
-    this.century = century;
-    this.fullYear = century + year;
-    this.year = year;
-    this.month = month;
-    this.day = day;
-    this.sep = sep;
-    this.num = nm;
-    this.check = check;
+    century = _century;
+    fullYear = _century + _year;
+    year = _year;
+    month = _month;
+    day = _day;
+    sep = _sep;
+    num = _nm;
+    check = _check;
 
-    if (!this._valid()) {
-      throw new PersonnummerException();
+    if (!_valid()) {
+      throw PersonnummerException();
     }
   }
 
   /// Test year, month and day as date and see if it's the same.
   /// Returns `true` if it's the same.
   bool _testDate(int year, int month, int day) {
-    DateTime date = new DateTime(year, month, day);
+    var date = DateTime(year, month, day);
     return !(date.year != year || date.month != month || date.day != day);
   }
 
@@ -128,18 +128,17 @@ class Personnummer {
   /// Returns `true` if the input value is a valid Swedish social security number.
   bool _valid() {
     try {
-      bool valid = this._luhn(this.year + this.month + this.day + this.num) ==
-          int.parse(this.check);
+      var valid = _luhn(year + month + day + num) == int.parse(check);
 
-      var year = int.parse(this.year);
-      var month = int.parse(this.month);
-      var day = int.parse(this.day);
+      var localYear = int.parse(year);
+      var localMonth = int.parse(month);
+      var localDay = int.parse(day);
 
-      if (valid && this._testDate(year, month, day)) {
+      if (valid && _testDate(localYear, localMonth, localDay)) {
         return valid;
       }
 
-      return valid && this._testDate(year, month, day - 60);
+      return valid && _testDate(localYear, localMonth, localDay - 60);
     } catch (e) {
       return false;
     }
@@ -148,36 +147,35 @@ class Personnummer {
   /// Format Swedish social security numbers to official format.
   String format([bool longFormat = false]) {
     if (longFormat) {
-      return this.century +
-          this.year +
-          this.month +
-          this.day +
-          this.num +
-          this.check;
+      return century + year + month + day + num + check;
     }
 
-    return this.year + this.month + this.day + this.sep + this.num + this.check;
+    return year + month + day + sep + num + check;
   }
 
   // Get age from a Swedish social security number.
   int getAge() {
-    int ageDay = int.parse(day);
-    if (this.isCoordinationNumber()) {
+    var ageDay = int.parse(day);
+    if (isCoordinationNumber()) {
       ageDay -= 60;
     }
 
-    DateTime u =
-        new DateTime(int.parse(century + year), int.parse(month), ageDay);
-    DateTime dt = dateTimeNow == null ? DateTime.now() : dateTimeNow;
+    var pnrDate = DateTime(int.parse(century + year), int.parse(month), ageDay);
 
-    return (dt.difference(u).inMilliseconds / 3.15576e+10).floor();
+    var dt;
+    if (dateTimeNow == null) {
+      dt = DateTime.now();
+    } else {
+      dt = dateTimeNow;
+    }
+
+    return (dt.difference(pnrDate).inMilliseconds / 3.15576e+10).floor();
   }
 
   /// Check if a Swedish social security number is a coordination number or not.
   /// Returns `true` if it's a coordination number.
   bool isCoordinationNumber() {
-    var day = int.parse(this.day);
-    return this._testDate(int.parse(this.year), int.parse(this.month), day - 60);
+    return _testDate(int.parse(year), int.parse(month), int.parse(day) - 60);
   }
 
   /// Check if a Swedish social security number is for a female.
@@ -189,7 +187,7 @@ class Personnummer {
   /// Check if a Swedish social security number is for a male.
   /// Returns `true` if it's a male.
   bool isMale() {
-    var sexDigit = this.num.substring(this.num.length - 1);
+    var sexDigit = num.substring(num.length - 1);
 
     return int.parse(sexDigit) % 2 == 1;
   }
@@ -200,13 +198,13 @@ class Personnummer {
 
   /// Parse Swedish social security numbers.
   /// Returns `Personnummer` class.
-  static Personnummer parse(String ssn, [dynamic options = null]) {
-    return new Personnummer(ssn, options);
+  static Personnummer parse(String ssn, [dynamic options]) {
+    return Personnummer(ssn, options);
   }
 
   /// Validates Swedish social security numbers.
   /// Returns `true` if the input value is a valid Swedish social security number
-  static bool valid(String ssn, [dynamic options = null]) {
+  static bool valid(String ssn, [dynamic options]) {
     try {
       parse(ssn, options);
       return true;
