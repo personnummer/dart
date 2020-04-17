@@ -1,5 +1,5 @@
 name: personnummer
-version: 3.0.1
+version: 3.0.2
 description: Validate Swedish social security numbers with Dart and Flutter.
 homepage: https://github.com/personnummer/dart
 
