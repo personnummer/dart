@@ -1,3 +1,8 @@
+## 3.0.1
+
+* Improve `isCoordinationNumber` to test the date
+* Make use of `isCoordinationNumber` inside `getAge` to determine the real day.
+
 ## 3.0.0
 
 > The one that breaks everything
