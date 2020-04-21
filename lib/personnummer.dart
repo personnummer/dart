@@ -1,5 +1,5 @@
 class PersonnummerException implements Exception {
-  String cause = 'Invalid swedish social security number';
+  String cause = 'Invalid swedish personal identity number';
   PersonnummerException([this.cause]);
 }
 
@@ -38,7 +38,7 @@ class Personnummer {
 
   /// Luhn/mod10 algorithm. Used to calculate a checksum from the passed value
   /// The checksum is returned and tested against the control number
-  /// in the social security number to make sure that it is a valid number.
+  /// in the personal identity number to make sure that it is a valid number.
   int _luhn(String str) {
     var v = 0;
     var sum = 0;
@@ -55,7 +55,7 @@ class Personnummer {
     return (sum / 10).ceil() * 10 - sum;
   }
 
-  /// Parse Swedish social security numbers and set properties.
+  /// Parse Swedish personal identity numbers and set properties.
   void _parse(String ssn) {
     var reg = RegExp(
         r'^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$');
@@ -124,8 +124,8 @@ class Personnummer {
     return !(date.year != year || date.month != month || date.day != day);
   }
 
-  /// Validates Swedish social security numbers.
-  /// Returns `true` if the input value is a valid Swedish social security number.
+  /// Validates Swedish personal identity numbers.
+  /// Returns `true` if the input value is a valid Swedish personal identity number.
   bool _valid() {
     try {
       var valid = _luhn(year + month + day + num) == int.parse(check);
@@ -144,7 +144,7 @@ class Personnummer {
     }
   }
 
-  /// Format Swedish social security numbers to official format.
+  /// Format Swedish personal identity numbers to official format.
   String format([bool longFormat = false]) {
     if (longFormat) {
       return century + year + month + day + num + check;
@@ -153,7 +153,7 @@ class Personnummer {
     return year + month + day + sep + num + check;
   }
 
-  // Get age from a Swedish social security number.
+  // Get age from a Swedish personal identity number.
   int getAge() {
     var ageDay = int.parse(day);
     if (isCoordinationNumber()) {
@@ -172,19 +172,19 @@ class Personnummer {
     return (dt.difference(pnrDate).inMilliseconds / 3.15576e+10).floor();
   }
 
-  /// Check if a Swedish social security number is a coordination number or not.
+  /// Check if a Swedish personal identity number is a coordination number or not.
   /// Returns `true` if it's a coordination number.
   bool isCoordinationNumber() {
     return _testDate(int.parse(year), int.parse(month), int.parse(day) - 60);
   }
 
-  /// Check if a Swedish social security number is for a female.
+  /// Check if a Swedish personal identity number is for a female.
   /// Returns `true` if it's a female.
   bool isFemale() {
     return !isMale();
   }
 
-  /// Check if a Swedish social security number is for a male.
+  /// Check if a Swedish personal identity number is for a male.
   /// Returns `true` if it's a male.
   bool isMale() {
     var sexDigit = num.substring(num.length - 1);
@@ -196,14 +196,14 @@ class Personnummer {
   // to modifiy DateTime.now.
   static DateTime dateTimeNow;
 
-  /// Parse Swedish social security numbers.
+  /// Parse Swedish personal identity numbers.
   /// Returns `Personnummer` class.
   static Personnummer parse(String ssn, [dynamic options]) {
     return Personnummer(ssn, options);
   }
 
-  /// Validates Swedish social security numbers.
-  /// Returns `true` if the input value is a valid Swedish social security number
+  /// Validates Swedish personal identity numbers.
+  /// Returns `true` if the input value is a valid Swedish personal identity number
   static bool valid(String ssn, [dynamic options]) {
     try {
       parse(ssn, options);

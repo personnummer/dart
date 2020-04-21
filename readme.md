@@ -1,6 +1,6 @@
 # personnummer [![Build Status](https://github.com/personnummer/dart/workflows/test/badge.svg)](https://github.com/personnummer/dart/actions)
 
-Validate Swedish social security numbers.
+Validate Swedish personal identity numbers.
 
 ## Example
 
