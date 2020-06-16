@@ -1,113 +1,97 @@
 import 'package:test/test.dart';
 import 'package:personnummer/personnummer.dart';
+import 'dart:io';
+import 'dart:async';
+import 'dart:convert';
 
-var invalidNumbers = [
-  null,
-  [],
-  true,
-  false,
-  0,
-  '19112233-4455',
-  '20112233-4455',
-  '9999999999',
-  '199999999999',
-  '199909193776',
-  'Just a string',
+Future<String> fetchUrlBodyAsString(String url) async {
+  var request = await new HttpClient().getUrl(Uri.parse(url));
+  var response = await request.close();
+  return response.transform(utf8.decoder).join();
+}
+
+var availableListFormats = [
+  'long_format',
+  'short_format',
+  'separated_format',
+  'separated_long',
 ];
 
-void main() {
-  Personnummer.dateTimeNow = new DateTime(2019, 7, 13);
+void main() async {
+  final url = 'https://raw.githubusercontent.com/personnummer/meta/master/testdata/list.json';
+  String body = await fetchUrlBodyAsString(url);
+  dynamic list = jsonDecode(body);
+  runTests(list);
+}
 
+void runTests(dynamic list) {
   test('should validate personnummer with control digit', () {
-    expect(true, Personnummer.valid('8507099805'));
-    expect(true, Personnummer.valid('198507099805'));
-    expect(true, Personnummer.valid('198507099813'));
-    expect(true, Personnummer.valid('850709-9813'));
-    expect(true, Personnummer.valid('196411139808'));
+    list.forEach((item) {
+      availableListFormats.forEach((format) {
+        expect(item["valid"], Personnummer.valid(item[format]));
+      });
+    });
   });
 
-  test('should not validate personnummer without control digit', () {
-    expect(false, Personnummer.valid('19850709980'));
-    expect(false, Personnummer.valid('19850709981'));
-    expect(false, Personnummer.valid('19641113980'));
+  test('should format personnummer', () {
+    list.forEach((item) {
+      availableListFormats.forEach((format) {
+        if (format != 'short_format' && item['separated_format'].indexOf('+') != -1) {
+          expect(item["separated_format"], Personnummer.parse(item[format]).format());
+          expect(item["long_format"], Personnummer.parse(item[format]).format(true));
+        }
+      });
+    });
   });
 
-  test('should not validate wrong personnummer or wrong types', () {
-    invalidNumbers
-        .forEach((n) => expect(false, Personnummer.valid(n.toString())));
-  });
+  test('should throw personnummer error', () {
+    list.forEach((item) {
+      if (item["valid"]) {
+        return;
+      }
 
-  test('should validate co-ordination numbers', () {
-    expect(true, Personnummer.valid('198507699802'));
-    expect(true, Personnummer.valid('850769-9802'));
-    expect(true, Personnummer.valid('198507699810'));
-    expect(true, Personnummer.valid('850769-9810'));
-  });
-
-  test('should not validate wrong co-ordination numbers', () {
-    expect(false, Personnummer.valid('198567099805'));
-  });
-
-  test('should parse personnummer and set properties', () {
-    var pnr = Personnummer.parse('198507699802');
-    expect('19', pnr.century);
-    expect('1985', pnr.fullYear);
-    expect('85', pnr.year);
-    expect('07', pnr.month);
-    expect('69', pnr.day);
-    expect('-', pnr.sep);
-    expect('980', pnr.num);
-    expect('2', pnr.check);
-  });
-
-  test('should throw errors for bad inputs when parsing', () {
-    invalidNumbers.forEach((n) {
+      availableListFormats.forEach((format) {
       try {
-        Personnummer.parse(n.toString());
+        Personnummer.parse(item["format"]);
         expect(false, true);
       } catch (e) {
         expect(true, true);
       }
+      });
     });
   });
 
-  test('should format input values correct', () {
-    expect('850709-9805', Personnummer.parse('19850709-9805').format());
-    expect('850709-9813', Personnummer.parse('198507099813').format());
+  test('should test personnummer sex', () {
+    list.forEach((item) {
+      if (!item["valid"]) {
+        return;
+      }
 
-    expect('198507099805', Personnummer.parse('19850709-9805').format(true));
-    expect('198507099813', Personnummer.parse('198507099813').format(true));
+      availableListFormats.forEach((format) {
+        expect(item["isMale"], Personnummer.parse(item[format]).isMale());
+        expect(item["isFemale"], Personnummer.parse(item[format]).isFemale());
+      });
+    });
   });
 
-  test('should format input values and replace separator with the right one',
-      () {
-    expect('850709-9805', Personnummer.parse('19850709+9805').format());
-    expect('121212+1212', Personnummer.parse('19121212-1212').format());
-  });
+  test('should test personnummer age', () {
+    list.forEach((item) {
+      availableListFormats.forEach((format) {
+        if (format != 'short_format' && item['separated_format'].indexOf('+') != -1) {
+          var pin = item["separated_long"];
+          var year = int.parse(pin.substring(0, 4));
+          var month = int.parse(pin.substring(4, 6));
+          var day = int.parse(pin.substring(6,8));
 
-  test('should test age', () {
-    expect(34, Personnummer.parse('198507099805').getAge());
-    expect(34, Personnummer.parse('198507099813').getAge());
-    expect(54, Personnummer.parse('196411139808').getAge());
-    expect(106, Personnummer.parse('19121212+1212').getAge());
-  });
+          if (item["type"] == 'con') {
+            day = day - 60;
+          }
 
-  test('should test age with co-ordination numbers', () {
-    expect(34, Personnummer.parse('198507699810').getAge());
-    expect(34, Personnummer.parse('198507699802').getAge());
-  });
-
-  test('should test sex', () {
-    expect(true, Personnummer.parse('198507099813').isMale());
-    expect(false, Personnummer.parse('198507099813').isFemale());
-    expect(true, Personnummer.parse('850709-9805').isFemale());
-    expect(false, Personnummer.parse('850709-9805').isMale());
-  });
-
-  test('should test sex with co-ordination numbers', () {
-    expect(true, Personnummer.parse('198507099813').isMale());
-    expect(false, Personnummer.parse('198507099813').isFemale());
-    expect(true, Personnummer.parse('198507699802').isFemale());
-    expect(false, Personnummer.parse('198507699802').isMale());
+          var date = DateTime(year, month, day);
+          Personnummer.dateTimeNow = date;
+          expect(0, Personnummer.parse(item[format]).getAge());
+        }
+      });
+    });
   });
 }
