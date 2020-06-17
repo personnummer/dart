@@ -1,29 +1,33 @@
+## 3.0.3
+
+- Fixed an issue where last four digits in personnumers with invalid data could be parsed.
+
 ## 3.0.2
 
-* Improve package health score by using [pana tool](https://github.com/dart-lang/pana) to analyze the code.
+- Improve package health score by using [pana tool](https://github.com/dart-lang/pana) to analyze the code.
 
 ## 3.0.1
 
-* Improve `isCoordinationNumber` to test the date
-* Make use of `isCoordinationNumber` inside `getAge` to determine the real day.
+- Improve `isCoordinationNumber` to test the date
+- Make use of `isCoordinationNumber` inside `getAge` to determine the real day.
 
 ## 3.0.0
 
 > The one that breaks everything
 
-* Brand new version that follow the new [specification](https://github.com/personnummer/meta#package-specification-v3).
+- Brand new version that follow the new [specification](https://github.com/personnummer/meta#package-specification-v3).
 
 ## 2.1.0
 
-* Added `isMale`
-* Added `isFemale`
-* Improved `format` to replace the separator if it's not matching the full year.
+- Added `isMale`
+- Added `isFemale`
+- Improved `format` to replace the separator if it's not matching the full year.
 
 ## 2.0.0
 
-* Added `getAge`
-* Added `format`
-* Follows personnummer spec.
+- Added `getAge`
+- Added `format`
+- Follows personnummer spec.
 
 ## 1.0.2
 
