@@ -58,7 +58,7 @@ class Personnummer {
   /// Parse Swedish personal identity numbers and set properties.
   void _parse(String ssn) {
     var reg = RegExp(
-        r'^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\+\-\s]?)((?!000)\d{3})(\d)$');
+        r'^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\+\-]?)((?!000)\d{3})(\d)$');
     var match;
 
     try {
