@@ -1,3 +1,7 @@
+## 3.0.4
+
+- Fixed whitespace separator issue, see [personnummer/meta#41](https://github.com/personnummer/meta/issues/41)
+
 ## 3.0.3
 
 - Fixed an issue where last four digits in personnumers with invalid data could be parsed.
