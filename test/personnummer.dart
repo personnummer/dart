@@ -18,7 +18,8 @@ var availableListFormats = [
 ];
 
 void main() async {
-  final url = 'https://raw.githubusercontent.com/personnummer/meta/master/testdata/list.json';
+  final url =
+      'https://raw.githubusercontent.com/personnummer/meta/master/testdata/list.json';
   String body = await fetchUrlBodyAsString(url);
   dynamic list = jsonDecode(body);
   runTests(list);
@@ -35,10 +36,16 @@ void runTests(dynamic list) {
 
   test('should format personnummer', () {
     list.forEach((item) {
+      if (!item['valid']) {
+        return;
+      }
+
       availableListFormats.forEach((format) {
-        if (format != 'short_format' && item['separated_format'].indexOf('+') != -1) {
-          expect(item["separated_format"], Personnummer.parse(item[format]).format());
-          expect(item["long_format"], Personnummer.parse(item[format]).format(true));
+        if (format != 'short_format') {
+          expect(item["separated_format"],
+              Personnummer.parse(item[format]).format());
+          expect(item["long_format"],
+              Personnummer.parse(item[format]).format(true));
         }
       });
     });
@@ -51,12 +58,12 @@ void runTests(dynamic list) {
       }
 
       availableListFormats.forEach((format) {
-      try {
-        Personnummer.parse(item["format"]);
-        expect(false, true);
-      } catch (e) {
-        expect(true, true);
-      }
+        try {
+          Personnummer.parse(item["format"]);
+          expect(false, true);
+        } catch (e) {
+          expect(true, true);
+        }
       });
     });
   });
@@ -76,12 +83,16 @@ void runTests(dynamic list) {
 
   test('should test personnummer age', () {
     list.forEach((item) {
+      if (!item['valid']) {
+        return;
+      }
+
       availableListFormats.forEach((format) {
-        if (format != 'short_format' && item['separated_format'].indexOf('+') != -1) {
+        if (format != 'short_format') {
           var pin = item["separated_long"];
           var year = int.parse(pin.substring(0, 4));
           var month = int.parse(pin.substring(4, 6));
-          var day = int.parse(pin.substring(6,8));
+          var day = int.parse(pin.substring(6, 8));
 
           if (item["type"] == 'con') {
             day = day - 60;
