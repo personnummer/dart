@@ -1,6 +1,6 @@
 class PersonnummerException implements Exception {
-  String cause = 'Invalid swedish personal identity number';
-  PersonnummerException([this.cause]);
+  String cause;
+  PersonnummerException([this.cause = 'Invalid swedish personal identity number']);
 }
 
 class Personnummer {
@@ -57,8 +57,7 @@ class Personnummer {
 
   /// Parse Swedish personal identity numbers and set properties.
   void _parse(String ssn) {
-    var reg = RegExp(
-        r'^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\+\-]?)((?!000)\d{3})(\d)$');
+    var reg = RegExp(r'^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\+\-]?)((?!000)\d{3})(\d)$');
     var match;
 
     try {
@@ -92,9 +91,7 @@ class Personnummer {
         baseYear = DateTime.now().year;
       }
 
-      _century = (baseYear - (baseYear - int.parse(_year)) % 100)
-          .toString()
-          .substring(0, 2);
+      _century = (baseYear - (baseYear - int.parse(_year)) % 100).toString().substring(0, 2);
     } else {
       if (DateTime.now().year - int.parse(_century + _year) < 100) {
         _sep = '-';
@@ -194,7 +191,7 @@ class Personnummer {
 
   // Custom DateTime that should be used
   // to modifiy DateTime.now.
-  static DateTime dateTimeNow;
+  static DateTime? dateTimeNow;
 
   /// Parse Swedish personal identity numbers.
   /// Returns `Personnummer` class.
