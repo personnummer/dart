@@ -1,3 +1,7 @@
+## 3.0.5
+
+- Migrate to null-safety, see [#8](https://github.com/personnummer/dart/pull/8)
+
 ## 3.0.4
 
 - Fixed whitespace separator issue, see [personnummer/meta#41](https://github.com/personnummer/meta/issues/41)
