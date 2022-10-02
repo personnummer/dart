@@ -5,7 +5,7 @@ import 'dart:async';
 import 'dart:convert';
 
 Future<String> fetchUrlBodyAsString(String url) async {
-  var request = await new HttpClient().getUrl(Uri.parse(url));
+  var request = await HttpClient().getUrl(Uri.parse(url));
   var response = await request.close();
   return response.transform(utf8.decoder).join();
 }
