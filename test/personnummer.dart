@@ -27,67 +27,67 @@ void main() async {
 
 void runTests(dynamic list) {
   test('should validate personnummer with control digit', () {
-    list.forEach((item) {
-      availableListFormats.forEach((format) {
+    for (var item in list) {
+      for (var format in availableListFormats) {
         expect(item["valid"], Personnummer.valid(item[format]));
-      });
-    });
+      }
+    }
   });
 
   test('should format personnummer', () {
-    list.forEach((item) {
+    for (var item in list) {
       if (!item['valid']) {
         return;
       }
 
-      availableListFormats.forEach((format) {
+      for (var format in availableListFormats) {
         if (format != 'short_format') {
           expect(item["separated_format"],
               Personnummer.parse(item[format]).format());
           expect(item["long_format"],
               Personnummer.parse(item[format]).format(true));
         }
-      });
-    });
+      }
+    }
   });
 
   test('should throw personnummer error', () {
-    list.forEach((item) {
+    for (var item in list) {
       if (item["valid"]) {
         return;
       }
 
-      availableListFormats.forEach((format) {
+      for (var format in availableListFormats) {
         try {
-          Personnummer.parse(item["format"]);
+          Personnummer.parse(item[format]);
           expect(false, true);
         } catch (e) {
           expect(true, true);
         }
-      });
-    });
+      }
+    }
   });
 
   test('should test personnummer sex', () {
-    list.forEach((item) {
+    for (var item in list) {
       if (!item["valid"]) {
         return;
       }
 
-      availableListFormats.forEach((format) {
+      for (var format in availableListFormats) {
         expect(item["isMale"], Personnummer.parse(item[format]).isMale());
         expect(item["isFemale"], Personnummer.parse(item[format]).isFemale());
-      });
-    });
+      }
+    }
   });
 
   test('should test personnummer age', () {
-    list.forEach((item) {
+    for (var item in list) {
       if (!item['valid']) {
         return;
       }
 
-      availableListFormats.forEach((format) {
+      for (var format in availableListFormats) {
         if (format != 'short_format') {
           var pin = item["separated_long"];
           var year = int.parse(pin.substring(0, 4));
@@ -102,7 +102,7 @@ void runTests(dynamic list) {
           Personnummer.dateTimeNow = date;
           expect(0, Personnummer.parse(item[format]).getAge());
         }
-      });
-    });
+      }
+    }
   });
 }
