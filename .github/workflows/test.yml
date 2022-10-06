@@ -19,6 +19,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Install dependencies
-      run: pub get
+      run: dart pub get
     - name: Run tests
-      run: pub run test/personnummer.dart
+      run: dart pub run test/personnummer.dart
