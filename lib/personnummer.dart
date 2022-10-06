@@ -1,6 +1,7 @@
 class PersonnummerException implements Exception {
   String cause;
-  PersonnummerException([this.cause = 'Invalid swedish personal identity number']);
+  PersonnummerException(
+      [this.cause = 'Invalid swedish personal identity number']);
 }
 
 class Personnummer {
@@ -57,33 +58,34 @@ class Personnummer {
 
   /// Parse Swedish personal identity numbers and set properties.
   void _parse(String ssn) {
-    var reg = RegExp(r'^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\+\-]?)((?!000)\d{3})(\d)$');
-    var match;
+    var reg = RegExp(
+        r'^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\+\-]?)((?!000)\d{3})(\d)$');
+    RegExpMatch? match;
 
     try {
       match = reg.firstMatch(ssn);
-
-      if (match == null) {
-        throw PersonnummerException();
-      }
     } catch (e) {
       throw PersonnummerException();
     }
 
+    if (match == null) {
+      throw PersonnummerException();
+    }
+
     var _century = match[1];
-    var _year = match[2];
-    var _month = match[3];
-    var _day = match[4];
-    var _sep = match[5];
-    var _nm = match[6];
+    var _year = match[2]!;
+    var _month = match[3]!;
+    var _day = match[4]!;
+    var _sep = match[5]!;
+    var _nm = match[6]!;
     var _check = match[7];
 
-    if (_check.isEmpty) {
+    if (_check == null || _check.isEmpty) {
       throw PersonnummerException();
     }
 
     if (_century == null || _century.isEmpty) {
-      var baseYear;
+      int baseYear;
       if (_sep == '+') {
         baseYear = (DateTime(DateTime.now().year - 100)).year;
       } else {
@@ -91,7 +93,9 @@ class Personnummer {
         baseYear = DateTime.now().year;
       }
 
-      _century = (baseYear - (baseYear - int.parse(_year)) % 100).toString().substring(0, 2);
+      _century = (baseYear - (baseYear - int.parse(_year)) % 100)
+          .toString()
+          .substring(0, 2);
     } else {
       if (DateTime.now().year - int.parse(_century + _year) < 100) {
         _sep = '-';
@@ -159,11 +163,11 @@ class Personnummer {
 
     var pnrDate = DateTime(int.parse(century + year), int.parse(month), ageDay);
 
-    var dt;
+    DateTime dt;
     if (dateTimeNow == null) {
       dt = DateTime.now();
     } else {
-      dt = dateTimeNow;
+      dt = dateTimeNow!;
     }
 
     return (dt.difference(pnrDate).inMilliseconds / 3.15576e+10).floor();
