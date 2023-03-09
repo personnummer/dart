@@ -4,20 +4,6 @@ class PersonnummerException implements Exception {
       [this.cause = 'Invalid swedish personal identity number']);
 }
 
-class PersonnummerOptions {
-  // Allow coordination number.
-  bool allowCoordinationNumber = true;
-
-  /// Allow interim number.
-  bool allowInterimNumber = false;
-
-  PersonnummerOptions(
-      {bool? allowCoordinationNumber, bool? allowInterimNumber}) {
-    allowCoordinationNumber = allowCoordinationNumber;
-    allowInterimNumber = allowInterimNumber;
-  }
-}
-
 class Personnummer {
   /// Personnummer age.
   String age = '';
