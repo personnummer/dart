@@ -18,14 +18,16 @@ var availableListFormats = [
 ];
 
 void main() async {
-  final url =
-      'https://raw.githubusercontent.com/personnummer/meta/master/testdata/list.json';
-  String body = await fetchUrlBodyAsString(url);
-  dynamic list = jsonDecode(body);
-  runTests(list);
+  String listBody = await fetchUrlBodyAsString(
+      'https://raw.githubusercontent.com/personnummer/meta/master/testdata/list.json');
+
+  String interimBody = await fetchUrlBodyAsString(
+      'https://raw.githubusercontent.com/personnummer/meta/master/testdata/interim.json');
+
+  runTests(jsonDecode(listBody), jsonDecode(interimBody));
 }
 
-void runTests(dynamic list) {
+void runTests(dynamic list, dynamic interim) {
   test('should validate personnummer with control digit', () {
     for (var item in list) {
       for (var format in availableListFormats) {
@@ -42,10 +44,9 @@ void runTests(dynamic list) {
 
       for (var format in availableListFormats) {
         if (format != 'short_format') {
-          expect(item["separated_format"],
-              Personnummer.parse(item[format]).format());
-          expect(item["long_format"],
-              Personnummer.parse(item[format]).format(true));
+          var p = Personnummer.parse(item[format]);
+          expect(item["separated_format"], p.format());
+          expect(item["long_format"], p.format(true));
         }
       }
     }
@@ -75,8 +76,9 @@ void runTests(dynamic list) {
       }
 
       for (var format in availableListFormats) {
-        expect(item["isMale"], Personnummer.parse(item[format]).isMale());
-        expect(item["isFemale"], Personnummer.parse(item[format]).isFemale());
+        var p = Personnummer.parse(item[format]);
+        expect(item["isMale"], p.isMale());
+        expect(item["isFemale"], p.isFemale());
       }
     }
   });
@@ -101,6 +103,47 @@ void runTests(dynamic list) {
           var date = DateTime(year, month, day);
           Personnummer.dateTimeNow = date;
           expect(0, Personnummer.parse(item[format]).getAge());
+        }
+      }
+    }
+  });
+
+  test('should test personnummer date', () {
+    for (var item in list) {
+      if (!item['valid']) {
+        return;
+      }
+
+      for (var format in availableListFormats) {
+        if (format != 'short_format') {
+          var pin = item["separated_long"];
+          var year = int.parse(pin.substring(0, 4));
+          var month = int.parse(pin.substring(4, 6));
+          var day = int.parse(pin.substring(6, 8));
+
+          if (item["type"] == 'con') {
+            day = day - 60;
+          }
+
+          var date = DateTime(year, month, day);
+          // Personnummer.dateTimeNow = date;
+          expect(date, Personnummer.parse(item[format]).getDate());
+        }
+      }
+    }
+  });
+
+  test('should test interim numbers', () {
+    for (var item in interim) {
+      if (!item['valid']) {
+        return;
+      }
+
+      for (var format in availableListFormats) {
+        if (format != 'short_format') {
+          var p = Personnummer.parse(item[format], allowInterimNumber: true);
+          expect(item['separated_format'], p.format());
+          expect(item['long_format'], p.format(true));
         }
       }
     }
