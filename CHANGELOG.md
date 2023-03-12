@@ -1,3 +1,12 @@
+## 3.1.0
+
+Personnummer v3.1 API Spec implemented.
+
+- Added options for allowing coordination numbers (true by default) and interim number (false by default).
+- Added support for interim numbers
+- Added `isInterimNumber` function
+- Added `getDate` function
+
 ## 3.0.5
 
 - Migrate to null-safety, see [#8](https://github.com/personnummer/dart/pull/8)
