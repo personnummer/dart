@@ -39,7 +39,7 @@ void runTests(dynamic list, dynamic interim) {
   test('should format personnummer', () {
     for (var item in list) {
       if (!item['valid']) {
-        return;
+        continue;
       }
 
       for (var format in availableListFormats) {
@@ -55,7 +55,7 @@ void runTests(dynamic list, dynamic interim) {
   test('should throw personnummer error', () {
     for (var item in list) {
       if (item["valid"]) {
-        return;
+        continue;
       }
 
       for (var format in availableListFormats) {
@@ -72,7 +72,7 @@ void runTests(dynamic list, dynamic interim) {
   test('should test personnummer sex', () {
     for (var item in list) {
       if (!item["valid"]) {
-        return;
+        continue;
       }
 
       for (var format in availableListFormats) {
@@ -86,7 +86,7 @@ void runTests(dynamic list, dynamic interim) {
   test('should test personnummer age', () {
     for (var item in list) {
       if (!item['valid']) {
-        return;
+        continue;
       }
 
       for (var format in availableListFormats) {
@@ -111,7 +111,7 @@ void runTests(dynamic list, dynamic interim) {
   test('should test personnummer date', () {
     for (var item in list) {
       if (!item['valid']) {
-        return;
+        continue;
       }
 
       for (var format in availableListFormats) {
@@ -136,7 +136,7 @@ void runTests(dynamic list, dynamic interim) {
   test('should test interim numbers', () {
     for (var item in interim) {
       if (!item['valid']) {
-        return;
+        continue;
       }
 
       for (var format in availableListFormats) {
@@ -144,6 +144,22 @@ void runTests(dynamic list, dynamic interim) {
           var p = Personnummer.parse(item[format], allowInterimNumber: true);
           expect(item['separated_format'], p.format());
           expect(item['long_format'], p.format(true));
+        }
+      }
+    }
+  });
+
+  test('should test invalid interim numbers', () {
+    for (var item in interim) {
+      if (item['valid']) {
+        continue;
+      }
+
+      for (var format in availableListFormats) {
+        if (format != 'short_format') {
+          expect(
+              () => Personnummer.parse(item[format], allowInterimNumber: true),
+              throwsException);
         }
       }
     }
