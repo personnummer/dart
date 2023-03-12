@@ -33,8 +33,11 @@ class Personnummer {
   String check = '';
 
   /// Personnummer constructor.
-  Personnummer(String ssn, [dynamic options]) {
-    _parse(ssn);
+  Personnummer(String pin,
+      {bool allowCoordinationNumber = true, bool allowInterimNumber = false}) {
+    _parse(pin,
+        allowCoordinationNumber: allowCoordinationNumber,
+        allowInterimNumber: allowInterimNumber);
   }
 
   /// Luhn/mod10 algorithm. Used to calculate a checksum from the passed value
@@ -57,13 +60,19 @@ class Personnummer {
   }
 
   /// Parse Swedish personal identity numbers and set properties.
-  void _parse(String ssn) {
+  void _parse(String pin,
+      {bool allowCoordinationNumber = true, bool allowInterimNumber = false}) {
+    if (pin.length < 10 || pin.length > 13) {
+      throw PersonnummerException(
+          "Input value too ${pin.length > 13 ? "long" : "short"}");
+    }
+
     var reg = RegExp(
-        r'^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\+\-]?)((?!000)\d{3})(\d)$');
+        r'^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([+-]?)((?!000)\d{3}|[TRSUWXJKLMN]\d{2})(\d)$');
     RegExpMatch? match;
 
     try {
-      match = reg.firstMatch(ssn);
+      match = reg.firstMatch(pin);
     } catch (e) {
       throw PersonnummerException();
     }
@@ -116,6 +125,16 @@ class Personnummer {
     if (!_valid()) {
       throw PersonnummerException();
     }
+
+    // throw error if coordination numbers is not allowed.
+    if (!allowCoordinationNumber && isCoordinationNumber()) {
+      throw PersonnummerException();
+    }
+
+    // throw error if interim numbers is not allowed.
+    if (!allowInterimNumber && isInterimNumber()) {
+      throw PersonnummerException();
+    }
   }
 
   /// Test year, month and day as date and see if it's the same.
@@ -129,7 +148,11 @@ class Personnummer {
   /// Returns `true` if the input value is a valid Swedish personal identity number.
   bool _valid() {
     try {
-      var valid = _luhn(year + month + day + num) == int.parse(check);
+      var valid = _luhn(year +
+              month +
+              day +
+              num.replaceFirst(RegExp(r'[TRSUWXJKLMN]'), '1')) ==
+          int.parse(check);
 
       var localYear = int.parse(year);
       var localMonth = int.parse(month);
@@ -154,15 +177,18 @@ class Personnummer {
     return year + month + day + sep + num + check;
   }
 
-  // Get age from a Swedish personal identity number.
-  int getAge() {
+  /// Get date from a Swedish personal identity number.
+  DateTime getDate() {
     var ageDay = int.parse(day);
     if (isCoordinationNumber()) {
       ageDay -= 60;
     }
 
-    var pnrDate = DateTime(int.parse(century + year), int.parse(month), ageDay);
+    return DateTime(int.parse(century + year), int.parse(month), ageDay);
+  }
 
+  /// Get age from a Swedish personal identity number.
+  int getAge() {
     DateTime dt;
     if (dateTimeNow == null) {
       dt = DateTime.now();
@@ -170,13 +196,19 @@ class Personnummer {
       dt = dateTimeNow!;
     }
 
-    return (dt.difference(pnrDate).inMilliseconds / 3.15576e+10).floor();
+    return (dt.difference(getDate()).inMilliseconds / 3.15576e+10).floor();
   }
 
   /// Check if a Swedish personal identity number is a coordination number or not.
   /// Returns `true` if it's a coordination number.
   bool isCoordinationNumber() {
     return _testDate(int.parse(year), int.parse(month), int.parse(day) - 60);
+  }
+
+  /// Check if a Swedish personal identity number is a interim number or not.
+  /// Returns `true` if it's a interim number.
+  bool isInterimNumber() {
+    return RegExp(r'[TRSUWXJKLMN]').hasMatch(num[0]);
   }
 
   /// Check if a Swedish personal identity number is for a female.
@@ -199,17 +231,23 @@ class Personnummer {
 
   /// Parse Swedish personal identity numbers.
   /// Returns `Personnummer` class.
-  static Personnummer parse(String ssn, [dynamic options]) {
-    return Personnummer(ssn, options);
+  static Personnummer parse(String pin,
+      {bool allowCoordinationNumber = true, bool allowInterimNumber = false}) {
+    return Personnummer(pin,
+        allowCoordinationNumber: allowCoordinationNumber,
+        allowInterimNumber: allowInterimNumber);
   }
 
   /// Validates Swedish personal identity numbers.
   /// Returns `true` if the input value is a valid Swedish personal identity number
-  static bool valid(String ssn, [dynamic options]) {
+  static bool valid(String pin,
+      {bool allowCoordinationNumber = true, bool allowInterimNumber = false}) {
     try {
-      parse(ssn, options);
+      Personnummer(pin,
+          allowCoordinationNumber: allowCoordinationNumber,
+          allowInterimNumber: allowInterimNumber);
       return true;
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }
