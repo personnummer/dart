@@ -19,10 +19,10 @@ var availableListFormats = [
 
 void main() async {
   String listBody = await fetchUrlBodyAsString(
-      'https://raw.githubusercontent.com/personnummer/meta/master/testdata/list.json');
+      'https://raw.githubusercontent.com/personnummer/meta/HEAD/testdata/list.json');
 
   String interimBody = await fetchUrlBodyAsString(
-      'https://raw.githubusercontent.com/personnummer/meta/master/testdata/interim.json');
+      'https://raw.githubusercontent.com/personnummer/meta/HEAD/testdata/interim.json');
 
   runTests(jsonDecode(listBody), jsonDecode(interimBody));
 }
