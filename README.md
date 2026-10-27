@@ -2,10 +2,12 @@
 
 Validate Swedish personal identity numbers.
 
+This package replaces [`personnummer`](https://pub.dev/packages/personnummer) on pub.dev. Change the dependency and import to `personnummer_dart`, the API is the same.
+
 ## Example
 
 ```dart
-import 'package:personnummer/personnummer.dart';
+import 'package:personnummer_dart/personnummer_dart.dart';
 
 Personnummer.valid('198507099805');
 //=> true

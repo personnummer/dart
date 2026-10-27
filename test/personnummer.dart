@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:personnummer/personnummer.dart';
+import 'package:personnummer_dart/personnummer_dart.dart';
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
