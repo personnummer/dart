@@ -1,3 +1,7 @@
+## 3.1.1
+
+- Published as `personnummer_dart` under the personnummer.dev publisher. This package replaces `personnummer`, whose publisher could not be accessed after the original owner passed away. To migrate, change the dependency and the import to `package:personnummer_dart/personnummer_dart.dart`. The API is unchanged.
+
 ## 3.1.0
 
 Personnummer v3.1 API Spec implemented.
