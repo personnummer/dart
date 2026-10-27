@@ -1,8 +1,8 @@
-# personnummer [![Build Status](https://github.com/personnummer/dart/workflows/test/badge.svg)](https://github.com/personnummer/dart/actions)
+# personnummer_dart [![Build Status](https://github.com/personnummer/dart/workflows/test/badge.svg)](https://github.com/personnummer/dart/actions)
 
 Validate Swedish personal identity numbers.
 
-This package replaces [`personnummer`](https://pub.dev/packages/personnummer) on pub.dev. Change the dependency and import to `personnummer_dart`, the API is the same.
+Published on pub.dev as [personnummer_dart](https://pub.dev/packages/personnummer_dart). It replaces the old `personnummer` package, which can no longer be updated. Change the dependency and the import to `personnummer_dart`, the API is the same.
 
 ## Example
 
